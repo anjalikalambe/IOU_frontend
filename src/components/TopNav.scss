@@ -1,0 +1,47 @@
+// FONT-COLOUR PALLETTE 
+// ------------------------
+// Blue: #007bff;
+// Dark: #3d5170;
+// Light: #9ea8b9;
+// ------------------------
+
+#topnav {
+  width: 100%;
+  height: 60px;
+  box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.12);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: #3d5170;
+
+  > div {
+    border-left: 1px solid #e1e5eb;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .notifications {
+    padding: 0 25px;
+    
+    svg {
+      font-size: 20px;
+    }
+  }
+
+  .profile {
+    font-size: 14px;
+    padding: 0 25px;
+
+    img {
+      height: 20px;
+      border-radius: 20%;
+      margin-right: 8px;
+    }
+
+    svg {
+      padding-top: 1px;
+    }
+  }
+}

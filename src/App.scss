@@ -1,0 +1,49 @@
+// FONT-COLOUR PALLETTE 
+// ------------------------
+// Blue: #007bff;
+// Dark: #3d5170;
+// Light: #9ea8b9;
+// ------------------------
+
+*, :after, :before {
+  box-sizing: border-box;
+  font-family: Lato,Arial,Helvetica,sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+#app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.component-wrapper {
+  padding: 50px;
+  height: 100%;
+  width: 100%;
+  max-width:1200px;
+  margin:0 auto;
+}
+
+.align-center {
+  display: flex;
+  align-items: center;
+}
+.justify-between {
+  display: flex;
+  justify-content: space-between;
+}
+.justify-center {
+  display: flex;
+  justify-content: center;
+}
