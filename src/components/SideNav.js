@@ -13,20 +13,20 @@ class Home extends React.Component {
   render = () =>
     <div id="sidenav">
       <div className="logo">
-        <span style={{marginRight: '6px'}}>Favours</span>
+        <span style={{marginRight: '6px'}}>IOU</span>
         <FontAwesomeIcon icon={faHeart} />
       </div>
       <div className="links">
         <NavLink to="/give-someone">
           <div className="link">
             <FontAwesomeIcon icon={faGift} />
-            <span>Give favours</span>
+            <span>Gift favours</span>
           </div>
         </NavLink>
         <NavLink to="/get-someone">
           <div className="link">
             <FontAwesomeIcon icon={faHandHoldingUsd} />
-            <span>Get favours</span>
+            <span>Claim rewards</span>
           </div>
         </NavLink>
         <NavLink to="/public-requests">
