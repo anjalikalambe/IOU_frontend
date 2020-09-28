@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 
-import RewardsModal from '../components/GiftModal.js'
+import RewardsModal from '../components/ClaimModal.js'
 
 function createData(name, assignedBy, item, picture, status) {
   return { name, assignedBy, item, picture, status };

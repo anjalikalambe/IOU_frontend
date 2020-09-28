@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -66,20 +66,11 @@ export default function GiveSomeone(props) {
               <div>
 
                 <h2 id="transition-modal-title" style={{ maxWidth: '500px' }}>
-                  Resolve {props.selectedRow.name}'s {props.selectedRow.item} favour
+                  Resolve {props.selectedRow.name}'s {props.selectedRow.item} favour?
                 </h2>
+                <span className="sub-title">(IF {props.selectedRow.name.toUpperCase()} PAYED YOU BACK)</span>
                 
-                <form className="modal" style={{justifyContent: 'center'}}>
-                  {file ?
-                    <img
-                      src={file}
-                      style={{ maxHeight: '350px', marginBottom: '20px', maxWidth: '800px', width: 'auto' }}
-                    />
-                    : null
-                  }
-                  <input type="file" onChange={(e) => handleFile(e)}/>
-                </form>
-                <div className="flex justify-between">
+                <div className="flex justify-between" style={{marginTop: '30px'}}>
                   <Button onClick={handleClose}>Cancel</Button>
                   <Button
                     variant="contained"
@@ -96,7 +87,7 @@ export default function GiveSomeone(props) {
                 <h2 id="transition-modal-title">
                   Create a favour
                 </h2>
-                <span className="sub-title">(THAT YOU OWE)</span>
+                <span className="sub-title">(THAT SOMEONE OWES YOU)</span>
                 <form className="modal">
                   <TextField
                     label="Person you owe"
@@ -119,6 +110,14 @@ export default function GiveSomeone(props) {
                       <MenuItem value={'Chocolate'}>Chocolate</MenuItem>
                     </Select>
                   </FormControl>
+                  {file ?
+                    <img
+                      src={file}
+                      style={{ maxHeight: '350px', marginBottom: '20px', maxWidth: '800px', width: 'auto' }}
+                    />
+                    : null
+                  }
+                  <input type="file" onChange={(e) => handleFile(e)}/>
                 </form>
                 <div className="flex justify-between">
                   <Button onClick={handleClose}>Cancel</Button>
@@ -128,7 +127,7 @@ export default function GiveSomeone(props) {
                     className={classes.button}
                     startIcon={<SaveIcon />}
                     onClick={handleSave}
-                    disabled={!item || !name}
+                    disabled={!item || !name || !file}
                   >
                     Save
                   </Button>

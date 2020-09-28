@@ -3,11 +3,17 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom'
+import { StoreProvider } from './stores/helpers/StoreContext';
+import { createStore } from './stores/helpers/CreateStore';
+
+const rootStore = createStore();
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <StoreProvider value={rootStore}>
+        <App />
+      </StoreProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

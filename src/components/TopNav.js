@@ -1,20 +1,51 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './TopNav.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell } from '@fortawesome/free-solid-svg-icons'
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
+import Dropdown from './UI/Dropdown'
+import { useStore } from '../stores/helpers/UseStore'
+import { observer } from 'mobx-react-lite'
+import { useHistory } from 'react-router-dom'
 
-class Home extends React.Component {
-  render = () =>
+function TopNav() {
+  const { dataStore: { auth } } = useStore();
+
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const history = useHistory();
+
+  const collapse = () => {
+    if (showDropdown) {
+      setTimeout(() => {
+        setShowDropdown(false);
+      }, 0);
+    }
+  }
+  const logout = () => {
+    //   localStorage.removeItem('loggedIn');
+    auth.logout();
+    history.push('/login');
+  }
+
+  const expand = () => {
+    if (!showDropdown) {
+      setShowDropdown(true);
+    }
+  }
+  return (
     <div id="topnav">
       <div className="notifications">
         <FontAwesomeIcon icon={faBell} />
       </div>
       <div className="profile">
-        <img src="/displaypic.png" alt=""/>
-        <span>David Bragg <FontAwesomeIcon icon={faCaretDown} /></span>
+        <div onClick={() => !showDropdown ? expand() : ''} className="profile__information flex align-center">
+          <img src="/displaypic.png" alt="" />
+          <span style={{textTransform: 'capitalize'}}>{auth.name} <FontAwesomeIcon icon={faCaretDown} /></span>
+        </div>
+        {showDropdown ? <Dropdown logout={logout} collapse={collapse} /> : ''}
       </div>
     </div>
+  )
 }
-
-export default Home
+export default observer(TopNav);

@@ -14,6 +14,26 @@
   justify-content: flex-end;
   color: #3d5170;
 
+  .profile__dropdown {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: translateY(100%);
+    background-color: white;
+    border: 1px solid #e1e5eb;
+    border-radius: 4px;
+  }
+
+  .profile__dropdown--link {
+    list-style-type: none;
+    padding: 10px 14px;
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+  }
+
   > div {
     border-left: 1px solid #e1e5eb;
     height: 100%;
@@ -29,10 +49,14 @@
       font-size: 20px;
     }
   }
+  .profile__information {
+    padding: 0 25px;
+    height: 100%;
+  }
 
   .profile {
     font-size: 14px;
-    padding: 0 25px;
+    position: relative;
 
     img {
       height: 20px;
