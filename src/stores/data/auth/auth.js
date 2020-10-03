@@ -13,10 +13,13 @@ export default class Auth {
     // payload.password; //Password
     this.loggedIn = true;
 
-    let data = {
+    this.updateLocalStorage({
       loggedIn: this.loggedIn,
       name: this.name
-    }
+    })
+  }
+
+  updateLocalStorage(data) {
     localStorage.setItem('data', JSON.stringify(data));
   }
 
