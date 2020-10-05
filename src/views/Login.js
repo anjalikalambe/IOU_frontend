@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { observer } from "mobx-react-lite";
 import { useStore } from "../stores/helpers/UseStore";
 import { useHistory } from "react-router-dom";
+import axios from 'axios'
 
 const Login = () => {
   const { dataStore: { auth } } = useStore();
@@ -86,23 +87,35 @@ const Login = () => {
     return valid;
   }
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
-    auth.login({
-      name: state.username,
+    let response = await axios.post("http://localhost:5000/auth/login", {
+      username: state.username,
       password: state.password
-    });
+    })
+    console.log(response.data);
+    // auth.login({
+    //   name: state.username,
+    //   password: state.password
+    // });
   }
   
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     
     if (validateSignUp()) {
-      auth.login({
-        name: state.username,
-        password: state.password
-      });
+      let response = await axios.post("http://localhost:5000/auth/register", {
+        username: state.username,
+        password: state.password,
+        confirmPassword: state.password,
+      })
+      
+      console.log(response);
     } 
+        // auth.login({
+        //   name: state.username,
+        //   password: state.password
+        // });
   }
 
   return (

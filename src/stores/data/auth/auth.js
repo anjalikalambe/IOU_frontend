@@ -6,12 +6,28 @@ export default class Auth {
   
   @observable
   name = false;
+  
+  @observable
+  token = '';
 
   @action 
   login(payload) {
-    this.name = payload.name;
+    this.name = payload.user.username;
     // payload.password; //Password
     this.loggedIn = true;
+
+    this.updateLocalStorage({
+      loggedIn: this.loggedIn,
+      name: this.name
+    })
+  }
+  
+  @action 
+  register(payload) {
+    this.name = payload.user.username;
+    // payload.password; //Password
+    this.loggedIn = true;
+    this.token = payload.token;
 
     this.updateLocalStorage({
       loggedIn: this.loggedIn,
