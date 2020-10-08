@@ -1,48 +1,34 @@
-import { observable, action, computed } from 'mobx'
+import { observable, action, computed } from "mobx";
 
-export default class Auth { 
+export default class Auth {
   @observable
   loggedIn = false;
-  
+
   @observable
-  name = false;
-  
+  username = false;
+
   @observable
-  token = '';
+  token = "";
 
-  @action 
-  login(payload) {
-    this.name = payload.user.username;
-    // payload.password; //Password
+  @action
+  login({ username, token }, cb) {
     this.loggedIn = true;
-
-    this.updateLocalStorage({
-      loggedIn: this.loggedIn,
-      name: this.name
-    })
-  }
-  
-  @action 
-  register(payload) {
-    this.name = payload.user.username;
-    // payload.password; //Password
-    this.loggedIn = true;
-    this.token = payload.token;
-
-    this.updateLocalStorage({
-      loggedIn: this.loggedIn,
-      name: this.name
-    })
+    this.username = username;
+    this.token = token;
+    this.updateLocalStorage({ loggedIn: this.loggedIn, username, token });
+    cb();
   }
 
   updateLocalStorage(data) {
-    localStorage.setItem('data', JSON.stringify(data));
+    localStorage.setItem("data", JSON.stringify(data));
   }
 
   @action
-  logout() {
+  logout(cb) {
     this.loggedIn = false;
-    this.name = ''
+    this.username = "";
+    this.token = "";
     localStorage.clear();
+    cb();
   }
 }

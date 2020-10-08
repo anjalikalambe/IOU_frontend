@@ -23,9 +23,7 @@ function TopNav() {
     }
   }
   const logout = () => {
-    //   localStorage.removeItem('loggedIn');
-    auth.logout();
-    history.push('/login');
+    auth.logout(() => history.push('/login'));
   }
 
   const expand = () => {
@@ -39,9 +37,9 @@ function TopNav() {
         <FontAwesomeIcon icon={faBell} />
       </div>
       <div className="profile">
-        <div onClick={() => !showDropdown ? expand() : ''} className="profile__information flex align-center">
+        <div onClick={() => !showDropdown && expand()} className="profile__information flex align-center">
           <img src="/displaypic.png" alt="" />
-          <span style={{textTransform: 'capitalize'}}>{auth.name} <FontAwesomeIcon icon={faCaretDown} /></span>
+          <span style={{textTransform: 'capitalize'}}>{auth.username} <FontAwesomeIcon icon={faCaretDown} /></span>
         </div>
         {showDropdown ? <Dropdown logout={logout} collapse={collapse} /> : ''}
       </div>
