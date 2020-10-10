@@ -15,7 +15,7 @@ function Alert(props) {
 
 const Login = (props) => {
   const {
-    dataStore: { auth },
+    auth,
   } = useStore();
   const [state, setState] = useState({
     username: "",

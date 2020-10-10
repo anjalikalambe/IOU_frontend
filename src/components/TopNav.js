@@ -9,7 +9,7 @@ import { observer } from 'mobx-react-lite'
 import { useHistory } from 'react-router-dom'
 
 function TopNav() {
-  const { dataStore: { auth } } = useStore();
+  const { auth } = useStore();
 
   const [showDropdown, setShowDropdown] = useState(false);
 

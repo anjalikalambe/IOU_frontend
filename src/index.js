@@ -9,13 +9,11 @@ import { createStore } from './stores/helpers/CreateStore';
 const rootStore = createStore();
 
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <StoreProvider value={rootStore}>
-        <App />
-      </StoreProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+  <BrowserRouter>
+    <StoreProvider value={rootStore}>
+      <App />
+    </StoreProvider>
+  </BrowserRouter>,
   document.getElementById('root')
 );
 

@@ -1,12 +1,18 @@
-import DataStore from "./data/DataStore";
+import { create } from 'mobx-persist'
+
+// import DataStore from "./data/DataStore";
+import AuthStore from './data/auth'
 import UiStore from "./ui/UiStore";
 
+const hydrate = create({
+  storage: localStorage
+})
+
 export default class RootStore {
-  dataStore;
-  uiStore;
+  auth = new AuthStore();
+  uiStore = new UiStore();
 
   constructor() {
-    this.dataStore = new DataStore(this);
-    this.uiStore = new UiStore(this);
+    hydrate('data', this.auth)
   }
 }
