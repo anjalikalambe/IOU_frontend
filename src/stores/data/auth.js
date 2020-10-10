@@ -27,13 +27,11 @@ export default class Auth {
   }
 
   *validateToken() {
-    console.log('*validateToken()');
     let res = yield axios.get('http://localhost:5000/auth/verifyToken', {
       headers: {
         authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmN2VkMGI1MDQ3YTQxZWZkYmY4YTBiOSIsInVzZXJuYW1lIjoiYSIsImlhdCI6MTYwMjI4ODc5MCwiZXhwIjoxNjAyODkzNTkwfQ.tf76B9QLJ70PHNT64_ARaoQVvxRC_JNHQqpLjyZSgOc"
       }
     })
-    console.log(res);
     if (!res.data.success) {
       this.logout();
     }

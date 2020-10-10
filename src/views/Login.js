@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
 import "./Login.scss";
-import { makeStyles } from "@material-ui/core/styles";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../stores/helpers/UseStore";
 import { useHistory } from "react-router-dom";
@@ -43,10 +42,10 @@ const Login = (props) => {
   });
   const { open, message, type } = snackbarState;
   const history = useHistory();
-  const handleOpen = (message, type = "info") => {
+  const openSnackbar = (message, type = "info") => {
     setSnackbarState({ open: true, message, type });
   };
-  const handleClose = () => {
+  const closeSnackbar = () => {
     setSnackbarState({ open: false, message, type });
   };
 
@@ -64,12 +63,12 @@ const Login = (props) => {
     setPasswordError({ error: false, message: "" });
     setConfirmPasswordError({ error: false, message: "" });
   };
-  const onLogin = () => {
+  const showLogin = () => {
     clearState();
     clearErrors();
     document.getElementById("container").classList.remove("right-panel-active");
   };
-  const onRegister = () => {
+  const showRegister = () => {
     clearState();
     clearErrors();
     document.getElementById("container").classList.add("right-panel-active");
@@ -110,6 +109,7 @@ const Login = (props) => {
         username: state.username,
         password: state.password,
       });
+      if (!response.success) throw new Error();
       auth.login({
         token: response.data.token,
         username: state.username,
@@ -119,12 +119,9 @@ const Login = (props) => {
     } catch (e) {
       setUsernameError({ error: true, message: "" });
       setPasswordError({ error: true, message: "" });
-      handleOpen(e.response.data.message, "error");
+      if (!e) return;
+      openSnackbar(e.response.data.message, "error");
     }
-    // auth.login({
-    //   name: state.username,
-    //   password: state.password
-    // });
   };
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -135,10 +132,10 @@ const Login = (props) => {
           password: state.password,
           confirmPassword: state.password,
         });
-        handleOpen("Account was successfully created", "success");
-        onLogin();
+        openSnackbar("Account was successfully created", "success");
+        showLogin();
       } catch (e) {
-        handleOpen(e.response.data.message, "error");
+        openSnackbar(e.response.data.message, "error");
       }
     }
   };
@@ -147,11 +144,11 @@ const Login = (props) => {
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={open}
-        onClose={handleClose}
+        onClose={closeSnackbar}
         key={"topright"}
         autoHideDuration={3000}
       >
-        <Alert onClose={handleClose} severity={type}>
+        <Alert onClose={closeSnackbar} severity={type}>
           {message}
         </Alert>
       </Snackbar>
@@ -205,7 +202,7 @@ const Login = (props) => {
                   width: "100%",
                   marginBottom: "16px",
                 }}
-                onClick={onLogin}
+                onClick={showLogin}
               >
                 Already have an account?
               </span>
@@ -246,7 +243,7 @@ const Login = (props) => {
               {state.loginError ? (
                 <p className="text-danger">{state.loginError}</p>
               ) : null}
-              <span style={{ textAlign: "left" }} onClick={onRegister}>
+              <span style={{ textAlign: "left" }} onClick={showRegister}>
                 Don't have an account?
               </span>
               <button type="submit" className="ghost">
@@ -260,13 +257,13 @@ const Login = (props) => {
           <div className="overlay">
             <div className="overlay-panel overlay-left">
               <h1>Already have an account?</h1>
-              <button onClick={onLogin} className="ghost">
+              <button onClick={showLogin} className="ghost">
                 Sign In
               </button>
             </div>
             <div className="overlay-panel overlay-right">
               <h1>Don't have an account?</h1>
-              <button onClick={onRegister} className="ghost">
+              <button onClick={showRegister} className="ghost">
                 Sign Up
               </button>
             </div>
