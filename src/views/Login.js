@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import "./Login.scss";
 import { observer } from "mobx-react-lite";
@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import MuiAlert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
-
+import HomeNav from '../components/HomeNav'
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -71,7 +71,9 @@ const Login = (props) => {
   const showRegister = () => {
     clearState();
     clearErrors();
-    document.getElementById("container").classList.add("right-panel-active");
+    if (document.getElementById("container")) {
+      document.getElementById("container").classList.add("right-panel-active");
+    }
   };
 
   const validateSignUp = () => {
@@ -109,7 +111,6 @@ const Login = (props) => {
         username: state.username,
         password: state.password,
       });
-      if (!response.success) throw new Error();
       auth.login({
         token: response.data.token,
         username: state.username,
@@ -119,7 +120,6 @@ const Login = (props) => {
     } catch (e) {
       setUsernameError({ error: true, message: "" });
       setPasswordError({ error: true, message: "" });
-      if (!e) return;
       openSnackbar(e.response.data.message, "error");
     }
   };
@@ -127,7 +127,7 @@ const Login = (props) => {
     e.preventDefault();
     if (validateSignUp()) {
       try {
-        let response = await axios.post("http://localhost:5000/auth/register", {
+        await axios.post("http://localhost:5000/auth/register", {
           username: state.username,
           password: state.password,
           confirmPassword: state.password,
@@ -139,8 +139,18 @@ const Login = (props) => {
       }
     }
   };
+  useState(() => {
+    if (window.location.pathname === '/register') {
+      setTimeout(() => {
+        showRegister();
+      });
+    } 
+  }, [])
   return (
     <div id="login">
+      <div className="homenav-wrapper">
+        <HomeNav/>
+      </div>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={open}
@@ -162,7 +172,6 @@ const Login = (props) => {
                 error={usernameError.error}
                 helperText={usernameError.message}
                 required
-                id="standard"
                 label="Username"
                 name="username"
                 onChange={(e) =>
@@ -174,7 +183,6 @@ const Login = (props) => {
                 error={passwordError.error}
                 helperText={passwordError.message}
                 required
-                id="standard-required"
                 label="Password"
                 type="password"
                 name="password"
@@ -187,7 +195,6 @@ const Login = (props) => {
                 error={confirmPasswordError.error}
                 helperText={confirmPasswordError.message}
                 required
-                id="standard-required"
                 label="Confirm Password"
                 type="password"
                 name="password"
@@ -202,7 +209,8 @@ const Login = (props) => {
                   width: "100%",
                   marginBottom: "16px",
                 }}
-                onClick={showLogin}
+                onClick={showLogin} c
+                className="helper"
               >
                 Already have an account?
               </span>
@@ -220,7 +228,6 @@ const Login = (props) => {
               <TextField
                 error={usernameError.error}
                 required
-                id="standard-required"
                 label="Username"
                 name="username"
                 onChange={(e) =>
@@ -231,7 +238,6 @@ const Login = (props) => {
               <TextField
                 error={passwordError.error}
                 required
-                id="standard-required"
                 label="Password"
                 type="password"
                 name="password"
@@ -243,7 +249,7 @@ const Login = (props) => {
               {state.loginError ? (
                 <p className="text-danger">{state.loginError}</p>
               ) : null}
-              <span style={{ textAlign: "left" }} onClick={showRegister}>
+              <span style={{ textAlign: "left" }} onClick={showRegister} className="helper">
                 Don't have an account?
               </span>
               <button type="submit" className="ghost">

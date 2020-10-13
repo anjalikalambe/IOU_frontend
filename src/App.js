@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import "./App.scss";
-import TopNav from "./components/TopNav.js";
-import SideNav from "./components/SideNav.js";
-import Home from "./views/Home.js";
-import Login from "./views/Login.js";
-import ClaimRewards from "./views/ClaimRewards.js";
-import GiftFavours from "./views/GiftFavours.js";
-import PublicRequests from "./views/PublicRequests.js";
-import Leaderboard from "./views/Leaderboard.js";
+import TopNav from "./components/TopNav";
+import SideNav from "./components/SideNav";
+import Home from "./views/Home";
+import HomeLeaderboard from "./views/HomeLeaderboard";
+import HomeRequests from "./views/HomeRequests";
+import Login from "./views/Login";
+import ClaimRewards from "./views/ClaimRewards";
+import GiftFavours from "./views/GiftFavours";
+import PublicRequests from "./views/PublicRequests";
+import Leaderboard from "./views/Leaderboard";
 import { Route, withRouter } from "react-router-dom";
 import { useStore } from "./stores/helpers/UseStore";
 import { observer } from "mobx-react-lite";
@@ -24,7 +26,10 @@ function App() {
   return (
     <div id="app">
       <Route path="/" exact component={Home} />
+      <UnprotectedRoute path="/home-leaderboard" component={HomeLeaderboard} />
+      <UnprotectedRoute path="/home-requests" component={HomeRequests} />
       <UnprotectedRoute path="/login" component={Login} />
+      <UnprotectedRoute path="/register" component={Login} />
       {auth.loggedIn && <SideNav />}
       <div className="main" style={{ display: auth.loggedIn ? 'block' : 'none'}}>
         {auth.loggedIn && <TopNav />}

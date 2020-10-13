@@ -14,7 +14,7 @@ const UnprotectedRoute = ({ component: Component, ...rest }) => {
         }
         return <Redirect to={
           {
-            pathname: props.location.state.from.pathname || '/get-someone',
+            pathname: props.location.state? props.location.state.from.pathname : '/get-someone',
             state: {
               from: props.location
             }

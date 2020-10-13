@@ -112,6 +112,7 @@ export default function GiveSomeone(props) {
                   </FormControl>
                   {file ?
                     <img
+                      alt=""
                       src={file}
                       style={{ maxHeight: '350px', marginBottom: '20px', maxWidth: '800px', width: 'auto' }}
                     />

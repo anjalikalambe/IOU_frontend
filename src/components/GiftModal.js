@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
@@ -73,6 +72,7 @@ export default function GiveSomeone(props) {
                 <form className="modal" style={{justifyContent: 'center'}}>
                   {file ?
                     <img
+                      alt=""
                       src={file}
                       style={{ maxHeight: '350px', marginBottom: '20px', maxWidth: '800px', width: 'auto' }}
                     />

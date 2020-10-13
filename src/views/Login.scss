@@ -4,7 +4,12 @@
   align-items: center;
   overflow: hidden;
   flex: 1;
-  span {
+  .homenav-wrapper {
+    position: absolute;
+    width: 100%;
+    top:0;
+  }
+  span.helper {
     display: none;
   }
   .sign-in-span {
@@ -30,7 +35,8 @@
       background-size: cover;
       background-repeat: no-repeat;
       background-image: url("/wavey.png");
-      filter: invert(1);
+      filter: invert(1) brightness(0);
+
     }
   }
   input {
@@ -38,14 +44,14 @@
   }
   .MuiInput-underline:hover:not(.Mui-disabled):before,
   .MuiInput-underline:after {
-    border-bottom: 2px solid #202124;
-    border-bottom-color: #202124;
+    border-bottom: 2px solid #6030b1;
+    border-bottom-color: #6030b1;
   }
   .MuiFormLabel-root {
     font-size: 16px;
   }
   .MuiFormLabel-root.Mui-focused {
-    color: #202124;
+    color: #6030b1;
   }
   .MuiFormControl-root.MuiTextField-root {
     color: var(--secondary);
@@ -77,7 +83,7 @@
 
     &:hover {
       background-color: white;
-      color: #202124;
+      color: #6030b1;
     }
   }
   h1 {
@@ -107,25 +113,25 @@
     a {
       font-size: 14px;
       margin-bottom: 12px;
-      color: #202124;
+      color: #6030b1;
       &:hover {
         text-decoration: underline;
       }
     }
     .ghost {
       width: 100%;
-      border-color: #202124;
-      background-color: #202124;
+      border-color: #6030b1;
+      background-color: #6030b1;
       color: white;
       margin-top: 14px;
 
       &:hover {
         background-color: white;
-        color: #202124;
+        color: #6030b1;
       }
     }
     h1 {
-      color: #202124;
+      color: #6030b1;
       margin-bottom: 20px;
     }
   }
@@ -251,11 +257,11 @@
     transform: translateX(-100%);
   }
   .overlay {
-    background: rgba(#202124, 1);
+    background: rgba(#6030b1, 1);
     background: -webkit-linear-gradient(
       to right,
-      rgba(#202124, 1),
-      rgba(#202124, 1)
+      rgba(#6030b1, 1),
+      rgba(#6030b1, 1)
     );
     background-repeat: no-repeat;
     background-size: cover;
@@ -303,7 +309,7 @@
     width: 100%;
     border: 1px solid #fff;
     background-color: #fff;
-    color: #202124;
+    color: #6030b1;
     font-size: 12px;
     font-weight: 500;
     padding: 0px;
