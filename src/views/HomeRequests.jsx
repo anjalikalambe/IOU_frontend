@@ -7,16 +7,31 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import './HomeLeaderboard.scss'
+import "./HomeLeaderboard.scss";
 function createData(requester, task, reward) {
   return { requester, task, reward };
 }
 let rows = [
-  createData("David", "Someone wash the dishes please", ["Coffee", "Chocolate"]),
-  createData("David", "Someone wash the dishes please", ["Coffee", "Chocolate"]),
-  createData("David", "Someone wash the dishes please", ["Coffee", "Chocolate"]),
-  createData("David", "Someone wash the dishes please", ["Coffee", "Chocolate"]),
-  createData("David", "Someone wash the dishes please", ["Coffee", "Chocolate"]),
+  createData("David", "Someone wash the dishes please", [
+    "Coffee",
+    "Chocolate",
+  ]),
+  createData("David", "Someone wash the dishes please", [
+    "Coffee",
+    "Chocolate",
+  ]),
+  createData("David", "Someone wash the dishes please", [
+    "Coffee",
+    "Chocolate",
+  ]),
+  createData("David", "Someone wash the dishes please", [
+    "Coffee",
+    "Chocolate",
+  ]),
+  createData("David", "Someone wash the dishes please", [
+    "Coffee",
+    "Chocolate",
+  ]),
 ];
 
 const HomeLeaderboard = (props) => {
@@ -42,11 +57,14 @@ const HomeLeaderboard = (props) => {
                   <TableCell>{row.requester}</TableCell>
                   <TableCell>{row.task}</TableCell>
                   <TableCell>
-                    {
-                      row.reward.map((item, index) => {
-                        return <span>{item}{row.reward.length - 1 !== index && ', '}</span>
-                      })
-                    }
+                    {row.reward.map((item, index) => {
+                      return (
+                        <span>
+                          {item}
+                          {row.reward.length - 1 !== index && ", "}
+                        </span>
+                      );
+                    })}
                   </TableCell>
                 </TableRow>
               ))}
