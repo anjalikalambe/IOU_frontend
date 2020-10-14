@@ -12,7 +12,7 @@ const HomeNav = () => {
     <header className="navbar">
       <div className="nav content-wrapper justify-between align-center">
         <div className="logo flex align-center">
-          <span style={{ marginRight: "6px", fontSize: "30px" }}>IOU</span>
+          <div style={{ marginRight: "6px", fontSize: "30px" }}>IOU</div>
           <FontAwesomeIcon icon={faHeart} style={{ color: "#6030b1" }} />
         </div>
         <div className="links align-center justify-between">
