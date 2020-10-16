@@ -9,43 +9,57 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-
-function createData(name, rewardsEarned) {
-  return { name, rewardsEarned };
-}
-let rows = [
-  createData('David', '10'),
-  createData('Anjali', '7'),
-  createData('Bragg', '5'),
-];
+import axios from "axios";
 
 
-export default function GiveSomeone() {
-  return (
-    <div id="give-someone">
-      <div className="justify-between" style={{marginBottom: '30px'}}>
-        <h1>Leaderboard</h1>
-      </div>
-      <TableContainer component={Paper}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Rank</TableCell>
-              <TableCell>User</TableCell>
-              <TableCell>Rewards Earned</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={row.name + index}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.rewardsEarned}</TableCell>
+class GiveSomeone extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { rows: [] };
+  }
+
+  componentDidMount() {
+    console.log('component rendered');
+
+    axios.get("http://localhost:5000/users/leaderboard/")
+      .then(response => {
+        let users = response.data;
+        this.setState({ rows: users });
+      })
+      .catch(e => {
+        console.log("Error: " + e);
+      });
+  }
+
+  render() {
+    return (
+      <div id="give-someone">
+        <div className="justify-between" style={{ marginBottom: '30px' }}>
+          <h1>Leaderboard</h1>
+        </div>
+        <TableContainer component={Paper}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Rank</TableCell>
+                <TableCell>User</TableCell>
+                <TableCell>Rewards Earned</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
-  )
+            </TableHead>
+            <TableBody>
+              {this.state.rows.map((row, index) => (
+                <TableRow key={row.username + index}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{row.username}</TableCell>
+                  <TableCell>{row.numRewards}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+    )
+  }
 }
+
+export default GiveSomeone;
