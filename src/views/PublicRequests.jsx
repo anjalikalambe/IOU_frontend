@@ -1,27 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import PublicReqModal from "../components/PublicReqModal.jsx";
 import AddReward from "../components/AddRewardModal.jsx";
 import ResolveReq from "../components/ResolveModal.jsx";
 import "./PublicRequest.scss";
+import Axios from "axios";
 
 export default function PublicRequests() {
   const [showModal, setShowModal] = useState(false);
   const [showResolve, setShowResolve] = useState(false);
   const [showAddRewardModal, setShowAddRewardModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
+  const [rows, setRows] = useState([]);
 
   const createFavour = () => {
     setShowModal(true);
     setSelectedRow({});
   };
-  const addReward = () => {
+  const addReward = (row) => {
     setShowAddRewardModal(true);
+    setSelectedRow(row);
   };
   const resolve = () => {
     setShowResolve(true);
   };
+
+  useEffect(() => {
+    Axios.get("http://localhost:5000/public/requests/")
+      .then((response) => {
+        const requests = response.data;
+        setRows(requests);
+      })
+      .catch(e => {
+        console.log("Couldn't display the public requests." + e);
+      });
+  }, []);
 
   return (
     <div id="give-someone">
@@ -33,16 +47,27 @@ export default function PublicRequests() {
       </div>
 
       <Grid container spacing={3}>
-        <Grid item xs={4}>
-          <div className="card">
-            <div className="card--title">Clean fridge</div>
-            <div className="card--body">Reward: Coffee, Chocolate</div>
-            <div className="btns">
-              <Button variant="outlined" color="primary" onClick={addReward}>Add Reward</Button>
-              <Button variant="contained" color="primary" onClick={resolve}>Resolve</Button>
+        {rows.map((row, index) => (
+          <Grid item xs={4}>
+            <div className="card" key={row.item + index}>
+              <div className="card--title">{row.description}</div>
+              <div className="card--body"><span>Rewards: </span>
+                {row.rewards.map((reward, index) => {
+                  return (
+                    <span>
+                      {reward.item}
+                      {row.rewards.length - 1 !== index && ", "}
+                    </span>
+                  );
+                })}
+              </div>
+              <div className="btns">
+                <Button variant="outlined" color="primary" onClick={() => { addReward(row) }}>Add Reward</Button>
+                <Button variant="contained" color="primary" onClick={resolve}>Resolve</Button>
+              </div>
             </div>
-          </div>
-        </Grid>
+          </Grid>
+        ))}
       </Grid>
 
       <PublicReqModal
@@ -54,12 +79,12 @@ export default function PublicRequests() {
         createFavour={(form) => console.log("createFavour() ", form)}
       />
       <AddReward
-        selectedRow={selectedRow}
+        selectedRow={selectedRow} /*favour sent as prop for id*/
         onClose={() => {
           setShowAddRewardModal(false);
         }}
         isOpen={showAddRewardModal}
-        addReward={(form) => console.log("createFavour() ", form)}
+        addReward={(form) => console.log("addFavour() ", form)}
       />
       <ResolveReq
         onClose={() => {

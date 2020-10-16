@@ -20,7 +20,7 @@ const HomeNav = () => {
             Home
           </NavLink>
           <NavLink to="/home-requests" exact className="link">
-            Requests
+            Public Requests
           </NavLink>
           <NavLink to="/home-leaderboard" exact className="link">
             Leaderboard
