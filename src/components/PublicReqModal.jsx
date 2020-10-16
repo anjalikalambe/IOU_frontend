@@ -11,6 +11,8 @@ import SaveIcon from "@material-ui/icons/Save";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import axios from "axios";
+
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -42,7 +44,22 @@ export default function PublicRequest(props) {
   };
 
   const handleSave = () => {
-    // props.createFavour({ name, item });
+    // props.createFavour({ name, item }); 
+    let rewards = {
+      item: item
+    }
+    let body = {
+      description: name,
+      rewards
+    }
+    let auth = localStorage.getItem('data');
+    auth = JSON.parse(auth);
+    let token = auth.token;
+
+    axios.post("http://localhost:5000/public/requests/add", body, { headers: {'Authorization': token}  })
+      .then(()=>console.log("Sucessfully created request"))
+      .catch(e => console.log("Could not create request"));
+    
     handleClose();
   };
 

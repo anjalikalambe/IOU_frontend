@@ -11,6 +11,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -43,6 +44,21 @@ export default function AddReward(props) {
 
   const handleSave = () => {
     props.addReward({ item });
+    const favour = props.selectedRow;
+    let id = favour._id;
+    
+    let body = {
+      item: item
+    }
+
+    let auth = localStorage.getItem('data');
+    auth = JSON.parse(auth);
+    let token = auth.token;
+
+    axios.post("http://localhost:5000/public/requests/addReward/", body, { headers: { 'Authorization': token }, params:{"id" : id}  })
+      .then(()=>console.log("Sucessfully added reward"))
+      .catch(e => console.log("Could not add reward"));
+
     handleClose();
   };
 
