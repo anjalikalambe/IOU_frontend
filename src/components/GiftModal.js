@@ -78,7 +78,7 @@ export default function GiveSomeone(props) {
     setFile(e.target.files[0])
   }
 
-  const handleSave = async () => {
+  const handleSave = () => {
     const formData = new FormData();
     formData.append("favourImage", favourImage);
     formData.append('item', item);
@@ -89,7 +89,7 @@ export default function GiveSomeone(props) {
     auth = JSON.parse(auth);
     let token = auth.token;
     
-    await axios.post("http://localhost:5000/favours/add", formData, { headers: { 'Authorization': token } })
+    axios.post("http://localhost:5000/favours/add", formData, { headers: { 'Authorization': token } })
       .then((res) => {
         setFavourError(res.data.message);
         openSnackbar(res.data.message, "info");
@@ -129,37 +129,6 @@ export default function GiveSomeone(props) {
       >
         <Fade in={props.isOpen}>
           <div className={classes.paper}>
-            {props.selectedRow.name ? 
-              <div>
-
-                <h2 id="transition-modal-title" style={{ maxWidth: '500px' }}>
-                  Resolve {props.selectedRow.name}'s {props.selectedRow.item} favour
-                </h2>
-                
-                <form className="modal" style={{justifyContent: 'center'}}>
-                  {imgURL ?
-                    <img
-                      alt=""
-                      src={imgURL}
-                      style={{ maxHeight: '350px', marginBottom: '20px', maxWidth: '800px', width: 'auto' }}
-                    />
-                    : null
-                  }
-                  <input type="file" onChange={(e) => handleFile(e)}/>
-                </form>
-                <div className="flex justify-between">
-                  <Button onClick={handleClose}>Cancel</Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    onClick={() => props.resolveFavour(favourImage)}
-                  >
-                    Resolve
-                  </Button>
-                </div>
-              </div>
-              :
               <div>
                 <h2 id="transition-modal-title">
                   Create a favour
@@ -209,7 +178,6 @@ export default function GiveSomeone(props) {
                   </Button>
                 </div>
               </div>
-            }
           </div>
         </Fade>
       </Modal>

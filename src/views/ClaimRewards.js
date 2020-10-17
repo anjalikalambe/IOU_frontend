@@ -11,10 +11,13 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import Axios from "axios";
 
 import RewardsModal from "../components/ClaimModal.js";
+import CloseFavourModal from "../components/CloseFavourModal";
 
 
 export default function GiveSomeone() {
   const [showModal, setShowModal] = useState(false);
+  const [showResolveModal, setResolveShowModal] = useState(false);
+
   const [selectedRow, setSelectedRow] = useState({});
   const [rows, setRows] = useState([]);
 
@@ -24,7 +27,7 @@ export default function GiveSomeone() {
   };
 
   const resolve = (row) => {
-    setShowModal(true);
+    setResolveShowModal(true);
     setSelectedRow(row);
   };
 
@@ -33,7 +36,7 @@ export default function GiveSomeone() {
     auth = JSON.parse(auth);
     let token = auth.token;
 
-    Axios.get("http://localhost:5000/favours/earned/",{ headers: {'Authorization': token}})
+    Axios.get("http://localhost:5000/favours/earned/", { headers: { 'Authorization': token } })
       .then((response) => {
         const requests = response.data;
         setRows(requests);
@@ -42,15 +45,12 @@ export default function GiveSomeone() {
         console.log(`Couldn't display the rewards earned by user.`);
       });
   }, []);
-  
+
 
   return (
     <div id="give-someone">
       <div className="justify-between" style={{ marginBottom: "30px" }}>
         <h1>Claim Rewards</h1>
-        <Button variant="outlined" onClick={createFavour}>
-          + Create Favour
-        </Button>
       </div>
       <div style={{ marginBottom: "15px" }}><h3>Favours owed by others</h3></div>
       <TableContainer component={Paper}>
@@ -59,7 +59,8 @@ export default function GiveSomeone() {
             <TableRow>
               <TableCell>User</TableCell>
               <TableCell>Item</TableCell>
-              <TableCell>Picture</TableCell>
+              <TableCell>Open Image</TableCell>
+              <TableCell>Close Image</TableCell>
               <TableCell>Status</TableCell>
             </TableRow>
           </TableHead>
@@ -79,30 +80,35 @@ export default function GiveSomeone() {
                       )}
                   </div>
                 </TableCell>
+                <TableCell className="img-wrapper">
+                  <div className="align-center">
+                    {row.closeImgURL ? (
+                      <a href={row.closeImgURL}>
+                        <img className="img-favour" src={row.closeImgURL} alt="" />
+                      </a>
+                    ) : (
+                        "Not provided"
+                      )}
+                  </div>
+                </TableCell>
                 <TableCell>
                   <div className="align-center">
-                    {row.status !== "Pending" ? (
-                      row.status === "Resolved" ? (
+                    {(row.completed || (row.openImgURL && row.closeImgURL)) ? (
+                      <>
+                        <img className="img-favour" src={row.status} />
                         <CheckCircleIcon
                           style={{ color: "green", fontSize: "30px" }}
                         />
-                      ) : (
-                        <>
-                          <img className="img-favour" src={row.status} />
-                          <CheckCircleIcon
-                            style={{ color: "green", fontSize: "30px" }}
-                          />
-                        </>
-                      )
+                      </>
                     ) : (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => resolve(row)}
-                      >
-                        Resolve
-                      </Button>
-                    )}
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => resolve(row)}
+                        >
+                          Resolve
+                        </Button>
+                      )}
                   </div>
                 </TableCell>
               </TableRow>
@@ -122,6 +128,18 @@ export default function GiveSomeone() {
         isOpen={showModal}
         resolveFavour={(file) => console.log("resolveFavour() ", file)}
         createFavour={(form) => console.log("createFavour() ", form)}
+      />
+
+      <CloseFavourModal
+        selectedRow={selectedRow}
+        onClose={() => {
+          setResolveShowModal(false);
+          setTimeout(() => {
+            setSelectedRow({});
+          }, 500);
+        }}
+        isOpen={showResolveModal}
+        resolveFavour={(file) => console.log("resolveFavour() ", file)}
       />
     </div>
   );

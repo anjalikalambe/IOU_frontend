@@ -15,20 +15,23 @@ import Axios from "axios";
 
 
 import GiftModal from "../components/GiftModal.js";
+import CloseFavourModal from "../components/CloseFavourModal";
 
 
 export default function GiveSomeone() {
-  const [showModal, setShowModal] = useState(false);
+  const [showFavourModal, setFavourShowModal] = useState(false);
+  const [showResolveModal, setResolveShowModal] = useState(false);
+
   const [selectedRow, setSelectedRow] = useState({});
   const [rows, setRows] = useState([]);
 
   const createFavour = () => {
-    setShowModal(true);
+    setFavourShowModal(true);
     setSelectedRow({});
   };
 
   const resolve = (row) => {
-    setShowModal(true);
+    setResolveShowModal(true);
     setSelectedRow(row);
   };
 
@@ -63,7 +66,8 @@ export default function GiveSomeone() {
             <TableRow>
               <TableCell>User</TableCell>
               <TableCell>Item</TableCell>
-              <TableCell>Picture</TableCell>
+              <TableCell>Open Image</TableCell>
+              <TableCell>Close Image</TableCell>
               <TableCell>Status</TableCell>
             </TableRow>
           </TableHead>
@@ -83,22 +87,27 @@ export default function GiveSomeone() {
                       )}
                   </div>
                 </TableCell>
+                <TableCell className="img-wrapper">
+                  <div className="align-center">
+                    {row.closeImgURL ? (
+                      <a href={row.closeImgURL}>
+                        <img className="img-favour" src={row.closeImgURL} alt="" />
+                      </a>
+                    ) : (
+                        "Not provided"
+                      )}
+                  </div>
+                </TableCell>
                 <TableCell>
                   <div className="align-center">
-                    {row.status !== "Pending" ? (
-                      row.status === "Resolved" ? (
+                    {(row.completed || (row.openImgURL && row.closeImgURL) )? (
+                      <>
+                        <img className="img-favour" src={row.status} />
                         <CheckCircleIcon
                           style={{ color: "green", fontSize: "30px" }}
                         />
-                      ) : (
-                          <>
-                            <img className="img-favour" src={row.status} />
-                            <CheckCircleIcon
-                              style={{ color: "green", fontSize: "30px" }}
-                            />
-                          </>
-                        )
-                    ) : (
+                      </>
+                      )  : (
                         <Button
                           variant="contained"
                           color="primary"
@@ -118,14 +127,26 @@ export default function GiveSomeone() {
       <GiftModal
         selectedRow={selectedRow}
         onClose={() => {
-          setShowModal(false);
+          setFavourShowModal(false);
           setTimeout(() => {
             setSelectedRow({});
           }, 500);
         }}
-        isOpen={showModal}
+        isOpen={showFavourModal}
         resolveFavour={(file) => console.log("resolveFavour() ", file)}
         createFavour={(form) => console.log("createFavour() ", form)}
+      />
+
+      <CloseFavourModal
+        selectedRow={selectedRow}
+        onClose={() => {
+          setResolveShowModal(false);
+          setTimeout(() => {
+            setSelectedRow({});
+          }, 500);
+        }}
+        isOpen={showResolveModal}
+        resolveFavour={(file) => console.log("resolveFavour() ", file)}
       />
     </div>
   );
