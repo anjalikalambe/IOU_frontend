@@ -29,6 +29,7 @@ export default class Auth {
   }
 
   *validateToken() {
+    if (!localStorage.data) return null;
     let res = yield axios.get("http://localhost:5000/auth/verifyToken", {
       headers: {
         authorization: JSON.parse(localStorage.data).token,
