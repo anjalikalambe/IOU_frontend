@@ -209,7 +209,7 @@ const Login = (props) => {
                   width: "100%",
                   marginBottom: "16px",
                 }}
-                onClick={showLogin} c
+                onClick={showLogin}
                 className="helper"
               >
                 Already have an account?

@@ -1,6 +1,6 @@
 import { flow, makeAutoObservable } from "mobx";
-import { persist } from 'mobx-persist'
-import axios from 'axios'
+import { persist } from "mobx-persist";
+import axios from "axios";
 export default class Auth {
   @persist
   loggedIn = false;
@@ -15,23 +15,25 @@ export default class Auth {
 
   constructor() {
     makeAutoObservable(this, {
-      validateToken: flow
-    })
+      validateToken: flow,
+    });
   }
 
   login({ username, token }, cb) {
     this.loggedIn = true;
     this.username = username;
     this.token = token;
-    cb();
+    if (cb) {
+      cb();
+    }
   }
 
   *validateToken() {
-    let res = yield axios.get('http://localhost:5000/auth/verifyToken', {
+    let res = yield axios.get("http://localhost:5000/auth/verifyToken", {
       headers: {
-        authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmN2VkMGI1MDQ3YTQxZWZkYmY4YTBiOSIsInVzZXJuYW1lIjoiYSIsImlhdCI6MTYwMjI4ODc5MCwiZXhwIjoxNjAyODkzNTkwfQ.tf76B9QLJ70PHNT64_ARaoQVvxRC_JNHQqpLjyZSgOc"
-      }
-    })
+        authorization: JSON.parse(localStorage.data).token,
+      },
+    });
     if (!res.data.success) {
       this.logout();
     }
@@ -42,6 +44,8 @@ export default class Auth {
     this.username = "";
     this.token = "";
     localStorage.clear();
-    cb();
+    if (cb) {
+      cb();
+    }
   }
 }

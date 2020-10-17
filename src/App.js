@@ -18,10 +18,10 @@ import UnprotectedRoute from "./utils/UnprotectedRoute";
 
 function App() {
   const { auth } = useStore();
-  
+
   useEffect(() => {
     auth.validateToken();
-  }, [])
+  }, []);
 
   return (
     <div id="app">
@@ -31,7 +31,10 @@ function App() {
       <UnprotectedRoute path="/login" component={Login} />
       <UnprotectedRoute path="/register" component={Login} />
       {auth.loggedIn && <SideNav />}
-      <div className="main" style={{ display: auth.loggedIn ? 'block' : 'none'}}>
+      <div
+        className="main"
+        style={{ display: auth.loggedIn ? "block" : "none" }}
+      >
         {auth.loggedIn && <TopNav />}
         <div className="component-wrapper">
           <ProtectedRoute path="/get-someone" component={ClaimRewards} />
