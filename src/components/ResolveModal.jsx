@@ -11,6 +11,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -42,7 +43,18 @@ export default function ResolvePublicReq(props) {
   };
 
   const handleSave = () => {
-    props.createFavour({ name, item });
+    // props.createFavour({ name, item }); /*I think we can remove this? since backend creates the favour to person who completed? */
+
+    const favour = props.selectedRow;
+
+    let auth = localStorage.getItem('data');
+    auth = JSON.parse(auth);
+    let token = auth.token;
+
+    axios.post("http://localhost:5000/public/requests/delete/", {},{ headers: { 'Authorization': token }, params:{"favour" : favour}  })
+      .then(()=>console.log("Sucessfully resolved request"))
+      .catch(e => console.log("Could not resolve request"));
+
     handleClose();
   };
 
@@ -87,7 +99,7 @@ export default function ResolvePublicReq(props) {
                   className={classes.button}
                   startIcon={<SaveIcon />}
                   onClick={handleSave}
-                  disabled={!item || !name || !file}
+                  disabled={!file}
                 >
                   Resolve
                 </Button>
