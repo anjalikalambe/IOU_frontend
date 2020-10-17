@@ -25,7 +25,7 @@ function App() {
 
   return (
     <div id="app">
-      <Route path="/" exact component={Home} />
+      <UnprotectedRoute path="/" exact component={Home} />
       <UnprotectedRoute path="/home-leaderboard" component={HomeLeaderboard} />
       <UnprotectedRoute path="/home-requests" component={HomeRequests} />
       <UnprotectedRoute path="/login" component={Login} />
