@@ -10,6 +10,13 @@ import SaveIcon from '@material-ui/icons/Save';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import axios from "axios";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -32,9 +39,38 @@ export default function GiveSomeone(props) {
   const [item, setItem] = useState('')
   
   const [name, setName] = useState('')
+  const [owed_by, setOwedBy] = useState('')
+  const [owed_to, setOwedTo] = useState('')
+
+  const [favourError, setFavourError] = useState({
+    error: false,
+    message: "",
+  });
+
+  const [snackbarState, setSnackbarState] = useState({
+    open: false,
+    message: "",
+    type: "info",
+  });
+
+  const { open, message, type } = snackbarState;
+
+  const openSnackbar = (message, type = "info") => {
+    setSnackbarState({ open: true, message, type });
+  };
+  const closeSnackbar = () => {
+    setSnackbarState({ open: false, message, type });
+  };
+
+  const clearErrors = () => {
+    setFavourError({ error: false, message: "" });
+  };
 
   const handleClose = () => {
     props.onClose();
+    setOwedBy('');
+    setOwedTo('');
+    setItem('');
   };
 
   const handleFile = (e) => {
@@ -42,12 +78,44 @@ export default function GiveSomeone(props) {
   }
 
   const handleSave = () => {
-    props.createFavour({ name, item })
-    handleClose()
+    props.createFavour({ owed_to, owed_by, item });
+
+    let body = {
+      item, 
+      owed_by,
+      owed_to
+    };
+
+    let auth = localStorage.getItem('data');
+    auth = JSON.parse(auth);
+    let token = auth.token;
+
+    axios.post("http://localhost:5000/favours/add", body, { headers: { 'Authorization': token } })
+      .then((res) => {
+        setFavourError(res.data.message);
+        openSnackbar(res.data.message, "info");
+      })
+      .catch(e => {
+        setFavourError(e.response.data);
+        openSnackbar(e.response.data.message, "error");
+      });
+
+    handleClose();
   }
 
   return (
     <div id="giftModal">
+        <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={open}
+        onClose={closeSnackbar}
+        key={"topright"}
+        autoHideDuration={4000}
+      >
+        <Alert onClose={closeSnackbar} severity={type}>
+          {message}
+        </Alert>
+      </Snackbar>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -100,10 +168,16 @@ export default function GiveSomeone(props) {
                 <span className="sub-title">(THAT YOU OWE)</span>
                 <form className="modal">
                   <TextField
-                    label="Person you owe"
+                    label="Favour is owed to user..."
                     variant="outlined"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={owed_by}
+                    onChange={(e) => setOwedBy(e.target.value)}
+                  />
+                  <TextField
+                    label="Favour is owed by user..."
+                    variant="outlined"
+                    value={owed_to}
+                    onChange={(e) => setOwedTo(e.target.value)}
                   />
                   <FormControl variant="outlined" className={classes.formControl}>
                     <InputLabel id="demo-simple-select-outlined-label">Item</InputLabel>
@@ -129,7 +203,7 @@ export default function GiveSomeone(props) {
                     className={classes.button}
                     startIcon={<SaveIcon />}
                     onClick={handleSave}
-                    disabled={!item || !name}
+                    disabled={!item || !owed_by || !owed_to}
                   >
                     Save
                   </Button>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import "./GiftFavours.scss";
 
@@ -11,35 +11,16 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import Axios from "axios";
+
 
 import GiftModal from "../components/GiftModal.js";
 
-function createData(name, assignedBy, item, picture, status) {
-  return { name, assignedBy, item, picture, status };
-}
-
-const rows = [
-  createData(
-    "Jack",
-    "David",
-    "Cupcake",
-    "https://dummyimage.com/600x400/000/fff",
-    "Pending"
-  ),
-  createData("Jack", "Jack", "Cookie", "", "Resolved"),
-  createData(
-    "Jill",
-    "Jill",
-    "Coffee",
-    "https://dummyimage.com/600x400/000/fff",
-    "https://dummyimage.com/600x400/000/fff"
-  ),
-];
 
 export default function GiveSomeone() {
   const [showModal, setShowModal] = useState(false);
-
   const [selectedRow, setSelectedRow] = useState({});
+  const [rows, setRows] = useState([]);
 
   const createFavour = () => {
     setShowModal(true);
@@ -51,19 +32,36 @@ export default function GiveSomeone() {
     setSelectedRow(row);
   };
 
+  useEffect(() => {
+    let auth = localStorage.getItem('data');
+    auth = JSON.parse(auth);
+    let token = auth.token;
+
+    Axios.get("http://localhost:5000/favours/owed/",{ headers: {'Authorization': token}})
+      .then((response) => {
+        const requests = response.data;
+        setRows(requests);
+      })
+      .catch(e => {
+        console.log(`Couldn't display the favours owed by user.`);
+      });
+  }, []);
+  
+
   return (
     <div id="give-someone">
       <div className="justify-between" style={{ marginBottom: "30px" }}>
-        <h1>Gift Favours</h1>
+        <h1>Favours</h1>
         <Button variant="outlined" onClick={createFavour}>
           + Create Favour
         </Button>
       </div>
+      <div style={{ marginBottom: "15px" }}><h3>Favours You Owe</h3></div>
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>You owe</TableCell>
+              <TableCell>User</TableCell>
               <TableCell>Item</TableCell>
               <TableCell>Picture</TableCell>
               <TableCell>Status</TableCell>
@@ -71,8 +69,8 @@ export default function GiveSomeone() {
           </TableHead>
           <TableBody>
             {rows.map((row, index) => (
-              <TableRow key={row.name + index}>
-                <TableCell>{row.name}</TableCell>
+              <TableRow key={row.owed_to + index}>
+                <TableCell>{row.owed_to}</TableCell>
                 <TableCell>{row.item}</TableCell>
                 <TableCell className="img-wrapper">
                   <div className="align-center">
