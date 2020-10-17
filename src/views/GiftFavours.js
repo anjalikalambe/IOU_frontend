@@ -37,7 +37,7 @@ export default function GiveSomeone() {
     auth = JSON.parse(auth);
     let token = auth.token;
 
-    Axios.get("http://localhost:5000/favours/owed/",{ headers: {'Authorization': token}})
+    Axios.get("http://localhost:5000/favours/owed/", { headers: { 'Authorization': token } })
       .then((response) => {
         const requests = response.data;
         setRows(requests);
@@ -46,7 +46,7 @@ export default function GiveSomeone() {
         console.log(`Couldn't display the favours owed by user.`);
       });
   }, []);
-  
+
 
   return (
     <div id="give-someone">
@@ -74,11 +74,13 @@ export default function GiveSomeone() {
                 <TableCell>{row.item}</TableCell>
                 <TableCell className="img-wrapper">
                   <div className="align-center">
-                    {row.picture ? (
-                      <img className="img-favour" src={row.picture} alt="" />
+                    {row.openImgURL ? (
+                      <a href={row.openImgURL}>
+                        <img className="img-favour" src={row.openImgURL} alt="" />
+                      </a>
                     ) : (
-                      "Not provided"
-                    )}
+                        "Not provided"
+                      )}
                   </div>
                 </TableCell>
                 <TableCell>
@@ -89,22 +91,22 @@ export default function GiveSomeone() {
                           style={{ color: "green", fontSize: "30px" }}
                         />
                       ) : (
-                        <>
-                          <img className="img-favour" src={row.status} />
-                          <CheckCircleIcon
-                            style={{ color: "green", fontSize: "30px" }}
-                          />
-                        </>
-                      )
+                          <>
+                            <img className="img-favour" src={row.status} />
+                            <CheckCircleIcon
+                              style={{ color: "green", fontSize: "30px" }}
+                            />
+                          </>
+                        )
                     ) : (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => resolve(row)}
-                      >
-                        Resolve
-                      </Button>
-                    )}
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => resolve(row)}
+                        >
+                          Resolve
+                        </Button>
+                      )}
                   </div>
                 </TableCell>
               </TableRow>

@@ -35,7 +35,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function GiveSomeone(props) {
   const classes = useStyles();
-  const [file, setFile] = useState('')
+  const [favourImage, setFile] = useState('');
+  const [imgURL, setImgURL] = useState('');
   const [item, setItem] = useState('')
   
   const [name, setName] = useState('')
@@ -74,23 +75,21 @@ export default function GiveSomeone(props) {
   };
 
   const handleFile = (e) => {
-    setFile(URL.createObjectURL(e.target.files[0]))
+    setFile(e.target.files[0])
   }
 
-  const handleSave = () => {
-    props.createFavour({ owed_to, owed_by, item });
-
-    let body = {
-      item, 
-      owed_by,
-      owed_to
-    };
+  const handleSave = async () => {
+    const formData = new FormData();
+    formData.append("favourImage", favourImage);
+    formData.append('item', item);
+    formData.append('owed_by', owed_by);
+    formData.append('owed_to', owed_to);
 
     let auth = localStorage.getItem('data');
     auth = JSON.parse(auth);
     let token = auth.token;
-
-    axios.post("http://localhost:5000/favours/add", body, { headers: { 'Authorization': token } })
+    
+    await axios.post("http://localhost:5000/favours/add", formData, { headers: { 'Authorization': token } })
       .then((res) => {
         setFavourError(res.data.message);
         openSnackbar(res.data.message, "info");
@@ -138,10 +137,10 @@ export default function GiveSomeone(props) {
                 </h2>
                 
                 <form className="modal" style={{justifyContent: 'center'}}>
-                  {file ?
+                  {imgURL ?
                     <img
                       alt=""
-                      src={file}
+                      src={imgURL}
                       style={{ maxHeight: '350px', marginBottom: '20px', maxWidth: '800px', width: 'auto' }}
                     />
                     : null
@@ -154,7 +153,7 @@ export default function GiveSomeone(props) {
                     variant="contained"
                     color="primary"
                     className={classes.button}
-                    onClick={() => props.resolveFavour(file)}
+                    onClick={() => props.resolveFavour(favourImage)}
                   >
                     Resolve
                   </Button>
@@ -168,13 +167,13 @@ export default function GiveSomeone(props) {
                 <span className="sub-title">(THAT YOU OWE)</span>
                 <form className="modal">
                   <TextField
-                    label="Favour is owed to user..."
+                    label="Favour is owed by user..."
                     variant="outlined"
                     value={owed_by}
                     onChange={(e) => setOwedBy(e.target.value)}
                   />
                   <TextField
-                    label="Favour is owed by user..."
+                    label="Favour is owed to user..."
                     variant="outlined"
                     value={owed_to}
                     onChange={(e) => setOwedTo(e.target.value)}
@@ -194,6 +193,7 @@ export default function GiveSomeone(props) {
                       <MenuItem value={'Chocolate'}>Chocolate</MenuItem>
                     </Select>
                   </FormControl>
+                  <input type="file" onChange={(e) => handleFile(e)}/>
                 </form>
                 <div className="flex justify-between">
                   <Button onClick={handleClose}>Cancel</Button>
