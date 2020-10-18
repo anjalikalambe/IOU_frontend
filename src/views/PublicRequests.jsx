@@ -5,7 +5,7 @@ import PublicReqModal from "../components/PublicReqModal.jsx";
 import AddReward from "../components/AddRewardModal.jsx";
 import ResolveReq from "../components/ResolveModal.jsx";
 import "./PublicRequest.scss";
-import Axios from "axios";
+import axios from "axios";
 
 export default function PublicRequests() {
   const [showModal, setShowModal] = useState(false);
@@ -22,12 +22,13 @@ export default function PublicRequests() {
     setShowAddRewardModal(true);
     setSelectedRow(row);
   };
-  const resolve = () => {
+  const resolve = (row) => {
     setShowResolve(true);
+    setSelectedRow(row);
   };
 
   useEffect(() => {
-    Axios.get("http://localhost:5000/public/requests/")
+    axios.get("http://localhost:5000/public/requests/")
       .then((response) => {
         const requests = response.data;
         setRows(requests);
@@ -63,7 +64,7 @@ export default function PublicRequests() {
               </div>
               <div className="btns">
                 <Button variant="outlined" color="primary" onClick={() => { addReward(row) }}>Add Reward</Button>
-                <Button variant="contained" color="primary" onClick={resolve}>Resolve</Button>
+                <Button variant="contained" color="primary" onClick={()=>{resolve(row)}}>Resolve</Button>
               </div>
             </div>
           </Grid>
@@ -87,6 +88,7 @@ export default function PublicRequests() {
         addReward={(form) => console.log("addFavour() ", form)}
       />
       <ResolveReq
+        selectedRow={selectedRow} /*favour sent as prop for id*/
         onClose={() => {
           setShowResolve(false);
         }}
