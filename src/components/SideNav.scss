@@ -1,6 +1,6 @@
 // FONT-COLOUR PALLETTE 
 // ------------------------
-// Blue: #007bff;
+// Blue: #6030b1;
 // Dark: #3d5170;
 // Light: #9ea8b9;
 // ------------------------
@@ -21,9 +21,9 @@
   }
   
   .active .link{
-    box-shadow: inset 0.1875rem 0 0 #007bff !important;
+    box-shadow: inset 0.1875rem 0 0 #6030b1 !important;
     background-color: #fbfbfb !important;
-    color: #007bff;
+    color: #6030b1;
   }
 
   .logo {
@@ -34,6 +34,10 @@
     font-size: 20px;
     font-weight: 600;
     border-bottom: 1px solid #e1e5eb !important;
+
+    svg {
+      color: #6030b1;
+    }
   }
 
   .link {
@@ -45,9 +49,9 @@
     transition: all 200ms ease;
 
     &:hover {
-      box-shadow: inset 0.1875rem 0 0 #007bff;
+      box-shadow: inset 0.1875rem 0 0 #6030b1;
       background-color: #fbfbfb;
-      color: #007bff;
+      color: #6030b1;
     }
 
     svg {

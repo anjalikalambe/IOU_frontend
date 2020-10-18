@@ -6,6 +6,7 @@ import AddReward from "../components/AddRewardModal.jsx";
 import ResolveReq from "../components/ResolveModal.jsx";
 import "./PublicRequest.scss";
 import axios from "axios";
+import { TextField } from "@material-ui/core";
 
 export default function PublicRequests() {
   const [showModal, setShowModal] = useState(false);
@@ -13,6 +14,24 @@ export default function PublicRequests() {
   const [showAddRewardModal, setShowAddRewardModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
   const [rows, setRows] = useState([]);
+  const [filter, setFilter] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const fetchPublicRequests = () => {
+    setLoading(true);
+    axios
+      .get("http://localhost:5000/public/requests/")
+      .then((response) => {
+        setLoading(false);
+        const requests = response.data;
+        setRows(requests);
+        console.log("setRows(requests)");
+      })
+      .catch((e) => {
+        setLoading(false);
+        console.log("Couldn't display the public requests." + e);
+      });
+  };
 
   const createFavour = () => {
     setShowModal(true);
@@ -28,47 +47,107 @@ export default function PublicRequests() {
   };
 
   useEffect(() => {
-    axios.get("http://localhost:5000/public/requests/")
-      .then((response) => {
-        const requests = response.data;
-        setRows(requests);
-      })
-      .catch(e => {
-        console.log("Couldn't display the public requests." + e);
-      });
+    fetchPublicRequests();
   }, []);
+
+  const filterRows = () => {
+    return rows.filter((row) => {
+      return (
+        [...new Set(row.rewards.map((reward) => reward.item.toLowerCase()))]
+          .join()
+          .includes(filter) || row.description.toLowerCase().includes(filter)
+      );
+    });
+  };
+
+  const displayRewards = (array) => {
+    if (!array.length) return <span>None</span>;
+    let arr = array.map((item) => item.item);
+    let map = {};
+    for (let i = 0; i < arr.length; ++i) {
+      map[arr[i]] ? map[arr[i]]++ : (map[arr[i]] = 1);
+    }
+    return Object.keys(map).map((reward, index) => {
+      if (map[reward] > 1) {
+        return (
+          <span key={reward + (index * 1000 + map[reward])}>
+            {`${reward} (x${map[reward]})`}
+            {Object.keys(map).length - 1 !== index ? ", " : ""}
+          </span>
+        );
+      } else {
+        return (
+          <span key={reward + (index * 1000 + map[reward])}>
+            {reward}
+            {Object.keys(map).length - 1 !== index ? ", " : ""}
+          </span>
+        );
+      }
+    });
+  };
 
   return (
     <div id="give-someone">
-      <div className="justify-between" style={{ marginBottom: "30px" }}>
+      <div
+        className="justify-between align-center"
+        style={{ marginBottom: "30px" }}
+      >
         <h1>Public Requests</h1>
-        <Button variant="outlined" onClick={createFavour}>
-          + Create Request
-        </Button>
+        <div className="flex justify-between align-center">
+          <TextField
+            label="Filter by task or reward"
+            variant="outlined"
+            onChange={(e) => setFilter(e.target.value)}
+          />
+          <Button
+            variant="outlined"
+            onClick={createFavour}
+            style={{ height: "56px", marginLeft: "20px" }}
+          >
+            + Create Request
+          </Button>
+        </div>
       </div>
 
       <Grid container spacing={3}>
-        {rows.map((row, index) => (
-          <Grid item xs={4}>
-            <div className="card" key={row.item + index}>
-              <div className="card--title">{row.description}</div>
-              <div className="card--body"><span>Rewards: </span>
-                {row.rewards.map((reward, index) => {
-                  return (
-                    <span>
-                      {reward.item}
-                      {row.rewards.length - 1 !== index && ", "}
-                    </span>
-                  );
-                })}
+        {filterRows().length
+          ? filterRows().map((row, index) => (
+              <Grid item xs={4} key={index + Math.random(100000)}>
+                <div className="card" key={row.item + index}>
+                  <div className="card--title">{row.description}</div>
+                  <div className="card--body">
+                    <span>Rewards: </span>
+                    {displayRewards(row.rewards)}
+                  </div>
+                  <div className="btns">
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        addReward(row);
+                      }}
+                    >
+                      Add Reward
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => {
+                        resolve(row);
+                      }}
+                    >
+                      Resolve
+                    </Button>
+                  </div>
+                </div>
+              </Grid>
+            ))
+          : !loading && (
+              <div className="empty-state">
+                <img src="/empty.png" class="empty-state__img"></img>
+                <h2>Could not find any public requests</h2>
               </div>
-              <div className="btns">
-                <Button variant="outlined" color="primary" onClick={() => { addReward(row) }}>Add Reward</Button>
-                <Button variant="contained" color="primary" onClick={()=>{resolve(row)}}>Resolve</Button>
-              </div>
-            </div>
-          </Grid>
-        ))}
+            )}
       </Grid>
 
       <PublicReqModal
@@ -85,7 +164,7 @@ export default function PublicRequests() {
           setShowAddRewardModal(false);
         }}
         isOpen={showAddRewardModal}
-        addReward={(form) => console.log("addFavour() ", form)}
+        rewardAdded={fetchPublicRequests}
       />
       <ResolveReq
         selectedRow={selectedRow} /*favour sent as prop for id*/

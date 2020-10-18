@@ -43,7 +43,6 @@ export default function AddReward(props) {
   };
 
   const handleSave = () => {
-    props.addReward({ item });
     const favour = props.selectedRow;
     let id = favour._id;
     
@@ -56,9 +55,11 @@ export default function AddReward(props) {
     let token = auth.token;
 
     axios.post("http://localhost:5000/public/requests/addReward/", body, { headers: { 'Authorization': token }, params:{"id" : id}  })
-      .then(()=>console.log("Sucessfully added reward"))
+      .then(() => {
+        props.rewardAdded();
+      })
       .catch(e => console.log("Could not add reward"));
-
+    
     handleClose();
   };
 

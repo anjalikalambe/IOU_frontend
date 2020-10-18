@@ -8,35 +8,41 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import axios from "axios";
-import './HomeLeaderboard.scss'
+import "./HomeLeaderboard.scss";
 
 class HomeLeaderboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {rows: []};
+    this.state = { rows: [] };
   }
 
   componentDidMount() {
-    console.log('component rendered');
+    console.log("component rendered");
 
-      axios.get("http://localhost:5000/users/leaderboard/")
-        .then(response => {
-          let users = response.data;
-          this.setState({ rows: users });
-        })
-        .catch(e => {
-          console.log("Error: " + e);
-        });
+    axios
+      .get("http://localhost:5000/users/leaderboard/")
+      .then((response) => {
+        let users = response.data;
+        this.setState({ rows: users });
+      })
+      .catch((e) => {
+        console.log("Error: " + e);
+      });
   }
 
   render() {
     return (
-      <div id="login" class="home-leaderboard">
+      <div className="flex flex-col" style={{ width: "100%" }}>
         <div className="homenav-wrapper">
           <HomeNav />
         </div>
-        <div className="bg" />
-        <div className="table-wrapper highlighed-top">
+        <div class="home-requests" style={{marginTop: '10px'}}>
+          <div
+            className="justify-between align-center"
+            style={{ marginBottom: "30px" }}
+          >
+            <h1>Leaderboard</h1>
+          </div>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableHead>
