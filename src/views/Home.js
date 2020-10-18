@@ -13,7 +13,7 @@ const Home = () => {
     <div className="flex flex-col" id="Home">
       <HomeNav />
       <section id="landing-page">
-        <div className="content-wrapper flex-col align-center" style={{position:'relative'}}>
+        <div className="content-wrapper flex-col align-center justify-center" style={{position:'relative'}}>
           <div className="flex flex-col align-center" style={{zIndex: 10, backgroundColor: '#fff'}}>
               <h1>UTS' highest rated online favour platform</h1>
               <h2>
