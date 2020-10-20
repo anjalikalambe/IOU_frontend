@@ -1,14 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import HomeNav from '../components/HomeNav';
-import './Home.scss'
 import { observer } from 'mobx-react-lite';
-import { useHistory } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
+import './Home.scss'
 
 const Home = () => {
-  let history = useHistory();
-  let location = useLocation();
-
   return (
     <div className="flex flex-col" id="Home">
       <HomeNav />

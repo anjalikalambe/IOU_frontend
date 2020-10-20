@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
@@ -31,14 +30,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function GiveSomeone(props) {
     const classes = useStyles();
-    const [favourImage, setFile] = useState('')
-    const [item, setItem] = useState('')
-    const [name, setName] = useState('')
-
-    const [favourError, setFavourError] = useState({
-        error: false,
-        message: "",
-    });
+    const [file, setFile] = useState("");
+    const [favourImage, setFavourImage] = useState('')
 
     const [snackbarState, setSnackbarState] = useState({
         open: false,
@@ -57,15 +50,16 @@ export default function GiveSomeone(props) {
 
     const handleClose = () => {
         props.onClose();
+        setFile("");
     };
     
-
     const handleFile = (e) => {
-        setFile(e.target.files[0])
+        setFile(URL.createObjectURL(e.target.files[0]));
+        setFavourImage(e.target.files[0])
     }
+    
 
     const handleResolve = () => {
-        // props.createFavour({ name, item });
         let favour = props.selectedRow;
         const formData = new FormData();
         formData.append("favourImage", favourImage);
@@ -76,11 +70,10 @@ export default function GiveSomeone(props) {
 
         axios.post("http://localhost:5000/favours/resolve", formData, { headers: { 'Authorization': token }, params: { id: favour._id } })
             .then((res) => {
-                setFavourError(res.data.message);
+                props.resolveFavour();
                 openSnackbar(res.data.message, "info");
             })
             .catch(e => {
-                setFavourError(e.response.data);
                 openSnackbar(e.response.data.message, "error");
             });
 
@@ -122,10 +115,10 @@ export default function GiveSomeone(props) {
                             <form className="modal">
                                 <FormControl variant="outlined" className={classes.formControl}>
                                 </FormControl>
-                                {favourImage ?
+                                {file ?
                                     <img
                                         alt=""
-                                        src={favourImage}
+                                        src={file}
                                         style={{ maxHeight: '350px', marginBottom: '20px', maxWidth: '800px', width: 'auto' }}
                                     />
                                     : null

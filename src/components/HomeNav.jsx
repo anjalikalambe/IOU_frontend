@@ -5,9 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const HomeNav = () => {
-  const notImplemented = () => {
-    alert("This feature has not been implemented.");
-  };
   return (
     <header className="navbar">
       <div className="nav content-wrapper justify-between align-center">

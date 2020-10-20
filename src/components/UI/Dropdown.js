@@ -9,12 +9,6 @@ const Dropdown = createReactClass({
     this.props.collapse();
   },
 
-  // getDefaultProps: function() {
-  //   return {
-  //     name: 'Mary'
-  //   };
-  // },
-
   render() {
     return (
       <div className="profile__dropdown">

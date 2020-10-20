@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
@@ -30,21 +29,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PublicRequest(props) {
   const classes = useStyles();
-  const [file, setFile] = useState("");
   const [item, setItem] = useState("");
-
   const [name, setName] = useState("");
 
   const handleClose = () => {
+    setItem("");
+    setName("");
     props.onClose();
   };
 
-  const handleFile = (e) => {
-    setFile(URL.createObjectURL(e.target.files[0]));
-  };
-
   const handleSave = () => {
-    // props.createFavour({ name, item }); 
     let rewards = {
       item: item
     }
@@ -57,7 +51,10 @@ export default function PublicRequest(props) {
     let token = auth.token;
 
     axios.post("http://localhost:5000/public/requests/add", body, { headers: {'Authorization': token}  })
-      .then(()=>console.log("Sucessfully created request"))
+      .then(() => {
+        console.log("Sucessfully created request");
+        props.addRequest();
+      })
       .catch(e => console.log("Could not create request"));
     
     handleClose();
@@ -100,9 +97,10 @@ export default function PublicRequest(props) {
                     label="Your Reward"
                   >
                     <MenuItem value={"Coffee"}>Coffee</MenuItem>
+                    <MenuItem value={"Gift Card"}>Gift Card</MenuItem>
+                    <MenuItem value={"Juice"}>Juice</MenuItem>
                     <MenuItem value={"Cupcake"}>Cupcake</MenuItem>
-                    <MenuItem value={"Cookie"}>Cookie</MenuItem>
-                    <MenuItem value={"Chocolate"}>Chocolate</MenuItem>
+                    <MenuItem value={"Voucher"}>Voucher</MenuItem>
                   </Select>
                 </FormControl>
               </form>

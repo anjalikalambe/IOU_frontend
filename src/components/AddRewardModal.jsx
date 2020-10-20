@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
@@ -29,17 +28,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddReward(props) {
   const classes = useStyles();
-  const [file, setFile] = useState("");
   const [item, setItem] = useState("");
-
-  const [name, setName] = useState("");
 
   const handleClose = () => {
     props.onClose();
-  };
-
-  const handleFile = (e) => {
-    setFile(URL.createObjectURL(e.target.files[0]));
   };
 
   const handleSave = () => {
@@ -83,13 +75,6 @@ export default function AddReward(props) {
               <h2 id="transition-modal-title">Add a Reward</h2>
               <span className="sub-title">(ONTO THE EXISTING REWARD LIST)</span>
               <form className="modal">
-                {/* <TextField
-                  label="What you want completed"
-                  variant="outlined"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled
-                /> */}
                 <FormControl variant="outlined" className={classes.formControl}>
                   <InputLabel id="demo-simple-select-outlined-label">
                     Your Reward
@@ -102,9 +87,10 @@ export default function AddReward(props) {
                     label="Your Reward"
                   >
                     <MenuItem value={"Coffee"}>Coffee</MenuItem>
+                    <MenuItem value={"Gift Card"}>Gift Card</MenuItem>
+                    <MenuItem value={"Juice"}>Juice</MenuItem>
                     <MenuItem value={"Cupcake"}>Cupcake</MenuItem>
-                    <MenuItem value={"Cookie"}>Cookie</MenuItem>
-                    <MenuItem value={"Chocolate"}>Chocolate</MenuItem>
+                    <MenuItem value={"Voucher"}>Voucher</MenuItem>
                   </Select>
                 </FormControl>
               </form>

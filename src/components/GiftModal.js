@@ -36,17 +36,10 @@ const useStyles = makeStyles((theme) => ({
 export default function GiveSomeone(props) {
   const classes = useStyles();
   const [favourImage, setFile] = useState('');
-  const [imgURL, setImgURL] = useState('');
   const [item, setItem] = useState('')
   
-  const [name, setName] = useState('')
   const [owed_by, setOwedBy] = useState('')
   const [owed_to, setOwedTo] = useState('')
-
-  const [favourError, setFavourError] = useState({
-    error: false,
-    message: "",
-  });
 
   const [snackbarState, setSnackbarState] = useState({
     open: false,
@@ -61,10 +54,6 @@ export default function GiveSomeone(props) {
   };
   const closeSnackbar = () => {
     setSnackbarState({ open: false, message, type });
-  };
-
-  const clearErrors = () => {
-    setFavourError({ error: false, message: "" });
   };
 
   const handleClose = () => {
@@ -84,18 +73,17 @@ export default function GiveSomeone(props) {
     formData.append('item', item);
     formData.append('owed_by', owed_by);
     formData.append('owed_to', owed_to);
-
+    
     let auth = localStorage.getItem('data');
     auth = JSON.parse(auth);
     let token = auth.token;
     
     axios.post("http://localhost:5000/favours/add", formData, { headers: { 'Authorization': token } })
       .then((res) => {
-        setFavourError(res.data.message);
+        props.createFavour();
         openSnackbar(res.data.message, "info");
       })
       .catch(e => {
-        setFavourError(e.response.data);
         openSnackbar(e.response.data.message, "error");
       });
 
@@ -156,10 +144,11 @@ export default function GiveSomeone(props) {
                       onChange={(e) => setItem(e.target.value)}
                       label="Item"
                     >
-                      <MenuItem value={'Coffee'}>Coffee</MenuItem>
-                      <MenuItem value={'Cupcake'}>Cupcake</MenuItem>
-                      <MenuItem value={'Cookie'}>Cookie</MenuItem>
-                      <MenuItem value={'Chocolate'}>Chocolate</MenuItem>
+                    <MenuItem value={"Coffee"}>Coffee</MenuItem>
+                    <MenuItem value={"Gift Card"}>Gift Card</MenuItem>
+                    <MenuItem value={"Juice"}>Juice</MenuItem>
+                    <MenuItem value={"Cupcake"}>Cupcake</MenuItem>
+                    <MenuItem value={"Voucher"}>Voucher</MenuItem>
                     </Select>
                   </FormControl>
                   <input type="file" onChange={(e) => handleFile(e)}/>

@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-
-import "./GiftFavours.scss";
-
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -11,36 +8,26 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import Axios from "axios";
-
 import GiftModal from "../components/GiftModal.js";
 import CloseFavourModal from "../components/CloseFavourModal";
+import "./GiftFavours.scss";
+import axios from "axios";
+
 
 export default function GiveSomeone() {
   const [showFavourModal, setFavourShowModal] = useState(false);
   const [showResolveModal, setResolveShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const [selectedRow, setSelectedRow] = useState({});
   const [rows, setRows] = useState([]);
 
-  const createFavour = () => {
-    setFavourShowModal(true);
-    setSelectedRow({});
-  };
-
-  const resolve = (row) => {
-    setResolveShowModal(true);
-    setSelectedRow(row);
-  };
-
-  useEffect(() => {
+  const fetchFavours = () => {
     setLoading(true);
     let auth = localStorage.getItem("data");
     auth = JSON.parse(auth);
     let token = auth.token;
 
-    Axios.get("http://localhost:5000/favours/owed/", {
+    axios.get("http://localhost:5000/favours/owed/", {
       headers: { Authorization: token },
     })
       .then((response) => {
@@ -52,6 +39,20 @@ export default function GiveSomeone() {
         setLoading(false);
         console.log(`Couldn't display the favours owed by user.`);
       });
+  }
+  
+  const createFavour = () => {
+    setFavourShowModal(true);
+    setSelectedRow({});
+  };
+
+  const resolve = (row) => {
+    setResolveShowModal(true);
+    setSelectedRow(row);
+  };
+
+  useEffect(() => {
+    fetchFavours();
   }, []);
 
   return (
@@ -64,7 +65,7 @@ export default function GiveSomeone() {
       </div>
       {!rows.length && !loading ? (
         <div className="empty-state">
-          <img src="/empty.png" class="empty-state__img"></img>
+          <img src="/empty.png" alt="" class="empty-state__img"></img>
           <h2>You don't owe any favours!</h2>
         </div>
       ) : !loading && (
@@ -123,7 +124,7 @@ export default function GiveSomeone() {
                         {row.completed ||
                         (row.openImgURL && row.closeImgURL) ? (
                           <>
-                            <img className="img-favour" src={row.status} />
+                            <img className="img-favour" alt="" src={row.status} />
                             <CheckCircleIcon
                               style={{ color: "green", fontSize: "30px" }}
                             />
@@ -156,8 +157,7 @@ export default function GiveSomeone() {
           }, 500);
         }}
         isOpen={showFavourModal}
-        resolveFavour={(file) => console.log("resolveFavour() ", file)}
-        createFavour={(form) => console.log("createFavour() ", form)}
+        createFavour={fetchFavours}
       />
 
       <CloseFavourModal
@@ -169,7 +169,7 @@ export default function GiveSomeone() {
           }, 500);
         }}
         isOpen={showResolveModal}
-        resolveFavour={(file) => console.log("resolveFavour() ", file)}
+        resolveFavour={fetchFavours}
       />
     </div>
   );

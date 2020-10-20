@@ -4,9 +4,9 @@ import Button from "@material-ui/core/Button";
 import PublicReqModal from "../components/PublicReqModal.jsx";
 import AddReward from "../components/AddRewardModal.jsx";
 import ResolveReq from "../components/ResolveModal.jsx";
-import "./PublicRequest.scss";
-import axios from "axios";
 import { TextField } from "@material-ui/core";
+import axios from "axios";
+import "./PublicRequest.scss";
 
 export default function PublicRequests() {
   const [showModal, setShowModal] = useState(false);
@@ -144,7 +144,7 @@ export default function PublicRequests() {
             ))
           : !loading && (
               <div className="empty-state">
-                <img src="/empty.png" class="empty-state__img"></img>
+                <img src="/empty.png" alt="" class="empty-state__img"></img>
                 <h2>Could not find any public requests</h2>
               </div>
             )}
@@ -157,6 +157,7 @@ export default function PublicRequests() {
         isOpen={showModal}
         resolveFavour={(file) => console.log("resolveFavour() ", file)}
         createFavour={(form) => console.log("createFavour() ", form)}
+        addRequest={fetchPublicRequests}
       />
       <AddReward
         selectedRow={selectedRow} /*favour sent as prop for id*/
@@ -174,6 +175,7 @@ export default function PublicRequests() {
         isOpen={showResolve}
         resolveFavour={(file) => console.log("resolveFavour() ", file)}
         createFavour={(form) => console.log("createFavour() ", form)}
+        requestResolved={fetchPublicRequests}
       />
     </div>
   );

@@ -10,7 +10,7 @@ import ClaimRewards from "./views/ClaimRewards";
 import GiftFavours from "./views/GiftFavours";
 import PublicRequests from "./views/PublicRequests";
 import Leaderboard from "./views/Leaderboard";
-import { Route, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { useStore } from "./stores/helpers/UseStore";
 import { observer } from "mobx-react-lite";
 import ProtectedRoute from "./utils/ProtectedRoute";

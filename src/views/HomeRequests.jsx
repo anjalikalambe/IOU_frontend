@@ -101,7 +101,7 @@ export default function HomeRequests() {
               ))
             : !loading && (
                 <div className="empty-state">
-                  <img src="/empty.png" class="empty-state__img"></img>
+                  <img src="/empty.png" alt="" class="empty-state__img"></img>
                   <h2>Could not find any public requests</h2>
                 </div>
               )}
