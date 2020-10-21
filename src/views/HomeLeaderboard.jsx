@@ -35,7 +35,7 @@ export default function HomeLeaderboard() {
       <div className="homenav-wrapper">
         <HomeNav />
       </div>
-      <div class="home-requests" style={{marginTop: '10px'}}>
+      <div className="home-requests" style={{marginTop: '10px'}}>
         <div
           className="justify-between align-center"
           style={{ marginBottom: "30px" }}

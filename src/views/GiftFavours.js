@@ -12,35 +12,48 @@ import GiftModal from "../components/GiftModal.js";
 import CloseFavourModal from "../components/CloseFavourModal";
 import "./GiftFavours.scss";
 import axios from "axios";
-
+import Loader from "../components/UI/Loader";
+import { TablePagination } from "@material-ui/core";
 
 export default function GiveSomeone() {
   const [showFavourModal, setFavourShowModal] = useState(false);
   const [showResolveModal, setResolveShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
+  const [initialRows, setInitialRows] = useState([]);
   const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const fetchFavours = () => {
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const fetchFavours = async () => {
     setLoading(true);
     let auth = localStorage.getItem("data");
     auth = JSON.parse(auth);
     let token = auth.token;
 
-    axios.get("/favours/owed/", {
-      headers: { Authorization: token },
-    })
-      .then((response) => {
-        setLoading(false);
-        const requests = response.data;
-        setRows(requests);
-      })
-      .catch((e) => {
-        setLoading(false);
-        console.log(`Couldn't display the favours owed by user.`);
+    try {
+      let response = await axios.get("/favours/owed/", {
+        headers: { Authorization: token },
       });
-  }
-  
+      console.log(response.data);
+      setInitialRows(response.data);
+      setRows(response.data);
+      console.log(initialRows, rows);
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      console.log(`Couldn't display the favours owed by user.`);
+    }
+  };
+
   const createFavour = () => {
     setFavourShowModal(true);
     setSelectedRow({});
@@ -63,89 +76,110 @@ export default function GiveSomeone() {
           + Create Favour/Reward
         </Button>
       </div>
+      {loading && <Loader />}
       {!rows.length && !loading ? (
         <div className="empty-state">
-          <img src="/empty.png" alt="" class="empty-state__img"></img>
+          <img src="/empty.png" alt="" className="empty-state__img"></img>
           <h2>You don't owe any favours!</h2>
         </div>
-      ) : !loading && (
-        <>
-          <div style={{ marginBottom: "15px" }}>
-            <h3>Favours You Owe</h3>
-          </div>
-          <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>User</TableCell>
-                  <TableCell>Item</TableCell>
-                  <TableCell>Open Image</TableCell>
-                  <TableCell>Close Image</TableCell>
-                  <TableCell>Status</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, index) => (
-                  <TableRow key={row.owed_to + index}>
-                    <TableCell>{row.owed_to}</TableCell>
-                    <TableCell>{row.item}</TableCell>
-                    <TableCell className="img-wrapper">
-                      <div className="align-center">
-                        {row.openImgURL ? (
-                          <a href={row.openImgURL}>
-                            <img
-                              className="img-favour"
-                              src={row.openImgURL}
-                              alt=""
-                            />
-                          </a>
-                        ) : (
-                          "Not provided"
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="img-wrapper">
-                      <div className="align-center">
-                        {row.closeImgURL ? (
-                          <a href={row.closeImgURL}>
-                            <img
-                              className="img-favour"
-                              src={row.closeImgURL}
-                              alt=""
-                            />
-                          </a>
-                        ) : (
-                          "Not provided"
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="align-center">
-                        {row.completed ||
-                        (row.openImgURL && row.closeImgURL) ? (
-                          <>
-                            <img className="img-favour" alt="" src={row.status} />
-                            <CheckCircleIcon
-                              style={{ color: "green", fontSize: "30px" }}
-                            />
-                          </>
-                        ) : (
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => resolve(row)}
-                          >
-                            Resolve
-                          </Button>
-                        )}
-                      </div>
-                    </TableCell>
+      ) : (
+        !loading && (
+          <>
+            <div style={{ marginBottom: "15px" }}>
+              <h3>Favours You Owe</h3>
+            </div>
+            <TableContainer component={Paper}>
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>User</TableCell>
+                    <TableCell>Item</TableCell>
+                    <TableCell>Open Image</TableCell>
+                    <TableCell>Close Image</TableCell>
+                    <TableCell>Status</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </>
+                </TableHead>
+                <TableBody>
+                  {console.log("rendered")}
+                  {rows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => (
+                      <TableRow key={row.owed_to + index}>
+                        <TableCell>{row.owed_to}</TableCell>
+                        <TableCell>{row.item}</TableCell>
+                        <TableCell className="img-wrapper">
+                          <div className="align-center">
+                            {row.openImgURL ? (
+                              <a href={row.openImgURL}>
+                                <img
+                                  className="img-favour"
+                                  src={row.openImgURL}
+                                  alt=""
+                                />
+                              </a>
+                            ) : (
+                              "Not provided"
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="img-wrapper">
+                          <div className="align-center">
+                            {row.closeImgURL ? (
+                              <a href={row.closeImgURL}>
+                                <img
+                                  className="img-favour"
+                                  src={row.closeImgURL}
+                                  alt=""
+                                />
+                              </a>
+                            ) : (
+                              "Not provided"
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="align-center">
+                            {row.completed ||
+                            (row.openImgURL && row.closeImgURL) ? (
+                              <>
+                                <img
+                                  className="img-favour"
+                                  alt=""
+                                  src={row.status}
+                                />
+                                <CheckCircleIcon
+                                  style={{ color: "green", fontSize: "30px" }}
+                                />
+                              </>
+                            ) : (
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => resolve(row)}
+                              >
+                                Resolve
+                              </Button>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            {rows.length > 10 && (
+              <TablePagination
+                rowsPerPageOptions={[10]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
+            )}
+          </>
+        )
       )}
 
       <GiftModal

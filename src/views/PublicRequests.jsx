@@ -18,6 +18,7 @@ export default function PublicRequests() {
   const [rows, setRows] = useState([]);
   const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
 
   const fetchPublicRequests = () => {
     setLoading(true);
@@ -158,7 +159,7 @@ export default function PublicRequests() {
             ))
           : !loading && (
               <div className="empty-state">
-                <img src="/empty.png" alt="" class="empty-state__img"></img>
+                <img src="/empty.png" alt="" className="empty-state__img"></img>
                 <h2>Could not find any public requests</h2>
               </div>
             )}

@@ -10,12 +10,23 @@ import Button from "@material-ui/core/Button";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseFavourModal from "../components/CloseFavourModal";
 import axios from "axios";
+import { TablePagination } from "@material-ui/core";
 
 export default function GiveSomeone() {
   const [showResolveModal, setResolveShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
   const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const fetchRewards = () => {
     setLoading(true);
@@ -53,7 +64,7 @@ export default function GiveSomeone() {
       </div>
       {!rows.length && !loading ? (
         <div className="empty-state">
-          <img src="/empty.png" alt="" class="empty-state__img"></img>
+          <img src="/empty.png" alt="" className="empty-state__img"></img>
           <h2>Nobody owes you any favours</h2>
         </div>
       ) : !loading && (
@@ -73,7 +84,9 @@ export default function GiveSomeone() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row, index) => (
+                  {rows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => (
                   <TableRow key={row.owed_by + index}>
                     <TableCell>{row.owed_by}</TableCell>
                     <TableCell>{row.item}</TableCell>
@@ -132,7 +145,18 @@ export default function GiveSomeone() {
                 ))}
               </TableBody>
             </Table>
-          </TableContainer>
+            </TableContainer>
+            {rows.length > 10 && (
+              <TablePagination
+                rowsPerPageOptions={[10]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
+            )}
         </>
       )}
 

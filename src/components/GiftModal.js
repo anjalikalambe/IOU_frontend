@@ -92,6 +92,8 @@ export default function GiveSomeone(props) {
     
     let token = JSON.parse(localStorage.getItem('data')).token;
     
+    handleClose();
+    
     await axios.post("/favours/add", formData, { headers: { 'Authorization': token } })
       .then((res) => {
         props.createFavour();
@@ -102,7 +104,6 @@ export default function GiveSomeone(props) {
         openSnackbar(e.response.data.message, "error");
       });
     detectParty(id);
-    handleClose();
   }
 
   return (
