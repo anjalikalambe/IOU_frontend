@@ -14,6 +14,7 @@ import "./GiftFavours.scss";
 import axios from "axios";
 import Loader from "../components/UI/Loader";
 import { TablePagination } from "@material-ui/core";
+import { useStore } from "../stores/helpers/UseStore.js";
 
 export default function GiveSomeone() {
   const [showFavourModal, setFavourShowModal] = useState(false);
@@ -24,6 +25,7 @@ export default function GiveSomeone() {
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const { auth } = useStore();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -35,24 +37,21 @@ export default function GiveSomeone() {
 
   const fetchFavours = async () => {
     setLoading(true);
-    let auth = localStorage.getItem("data");
-    auth = JSON.parse(auth);
-    let token = auth.token;
-
     try {
-      let response = await axios.get("/favours/owed/", {
-        headers: { Authorization: token },
+      const { data } = await axios.get("/favours/owed/", {
+        headers: { Authorization: auth.token },
       });
-      console.log(response.data);
-      setInitialRows(response.data);
-      setRows(response.data);
-      console.log(initialRows, rows);
+      console.log(data);
+      setRows(data);
+      console.log(rows);
       setLoading(false);
     } catch (e) {
       setLoading(false);
       console.log(`Couldn't display the favours owed by user.`);
     }
   };
+
+  console.log(rows);
 
   const createFavour = () => {
     setFavourShowModal(true);
@@ -100,7 +99,6 @@ export default function GiveSomeone() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {console.log("rendered")}
                   {rows
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => (

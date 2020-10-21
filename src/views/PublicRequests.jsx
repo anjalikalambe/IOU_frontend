@@ -5,9 +5,10 @@ import PublicReqModal from "../components/PublicReqModal.jsx";
 import AddReward from "../components/AddRewardModal.jsx";
 import DeleteReward from "../components/DeleteRewardModal.jsx";
 import ResolveReq from "../components/ResolveModal.jsx";
-import { TextField } from "@material-ui/core";
+import { TablePagination, TextField } from "@material-ui/core";
 import axios from "axios";
 import "./PublicRequest.scss";
+import Loader from "../components/UI/Loader";
 
 export default function PublicRequests() {
   const [showModal, setShowModal] = useState(false);
@@ -19,6 +20,15 @@ export default function PublicRequests() {
   const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(9);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 9));
+    setPage(0);
+  };
 
   const fetchPublicRequests = () => {
     setLoading(true);
@@ -114,49 +124,51 @@ export default function PublicRequests() {
           </Button>
         </div>
       </div>
-
+      {loading && <Loader />}
       <Grid container spacing={3}>
         {filterRows().length
-          ? filterRows().map((row, index) => (
-              <Grid item xs={4} key={index + Math.random(100000)}>
-                <div className="card" key={row.item + index}>
-                  <div className="card--title">{row.description}</div>
-                  <div className="card--body">
-                    <span>Rewards: </span>
-                    {displayRewards(row.rewards)}
+          ? filterRows()
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row, index) => (
+                <Grid item xs={4} key={index + Math.random(100000)}>
+                  <div className="card" key={row.item + index}>
+                    <div className="card--title">{row.description}</div>
+                    <div className="card--body">
+                      <span>Rewards: </span>
+                      {displayRewards(row.rewards)}
+                    </div>
+                    <div className="btns">
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          addReward(row);
+                        }}
+                      >
+                        +
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          deleteReward(row);
+                        }}
+                      >
+                        -
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          resolve(row);
+                        }}
+                      >
+                        Resolve
+                      </Button>
+                    </div>
                   </div>
-                  <div className="btns">
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => {
-                        addReward(row);
-                      }}
-                    >
-                    +
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => {
-                        deleteReward(row);
-                      }}
-                    >
-                      -
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => {
-                        resolve(row);
-                      }}
-                    >
-                      Resolve
-                    </Button>
-                  </div>
-                </div>
-              </Grid>
-            ))
+                </Grid>
+              ))
           : !loading && (
               <div className="empty-state">
                 <img src="/empty.png" alt="" className="empty-state__img"></img>
@@ -164,6 +176,17 @@ export default function PublicRequests() {
               </div>
             )}
       </Grid>
+      {filterRows().length > 9 && (
+        <TablePagination
+          rowsPerPageOptions={[9]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      )}
 
       <PublicReqModal
         onClose={() => {

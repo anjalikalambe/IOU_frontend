@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
 import axios from "axios";
-import { TextField } from "@material-ui/core";
+import { TablePagination, TextField } from "@material-ui/core";
 import HomeNav from "../components/HomeNav";
 import "./HomeRequests.scss";
+import Loader from '../components/UI/Loader'
 
 export default function HomeRequests() {
   const [rows, setRows] = useState([]);
   const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(9);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 9));
+    setPage(0);
+  };
 
   const fetchPublicRequests = () => {
     setLoading(true);
@@ -85,27 +96,44 @@ export default function HomeRequests() {
             />
           </div>
         </div>
-
+        {loading && <Loader />}
         <Grid container spacing={3}>
           {filterRows().length
-            ? filterRows().map((row, index) => (
-                <Grid item xs={4} key={index + Math.random(100000)}>
-                  <div className="card" key={row.item + index}>
-                    <div className="card--title">{row.description}</div>
-                    <div className="card--body">
-                      <span>Rewards: </span>
-                      {displayRewards(row.rewards)}
+            ? filterRows()
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => (
+                  <Grid item xs={4} key={index + Math.random(100000)}>
+                    <div className="card" key={row.item + index}>
+                      <div className="card--title">{row.description}</div>
+                      <div className="card--body">
+                        <span>Rewards: </span>
+                        {displayRewards(row.rewards)}
+                      </div>
                     </div>
-                  </div>
-                </Grid>
-              ))
+                  </Grid>
+                ))
             : !loading && (
                 <div className="empty-state">
-                  <img src="/empty.png" alt="" className="empty-state__img"></img>
+                  <img
+                    src="/empty.png"
+                    alt=""
+                    className="empty-state__img"
+                  ></img>
                   <h2>Could not find any public requests</h2>
                 </div>
               )}
         </Grid>
+        {filterRows().length > 9 && (
+          <TablePagination
+            rowsPerPageOptions={[9]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        )}
       </div>
     </div>
   );

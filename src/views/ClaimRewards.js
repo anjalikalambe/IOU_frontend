@@ -11,6 +11,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseFavourModal from "../components/CloseFavourModal";
 import axios from "axios";
 import { TablePagination } from "@material-ui/core";
+import Loader from "../components/UI/Loader";
 
 export default function GiveSomeone() {
   const [showResolveModal, setResolveShowModal] = useState(false);
@@ -62,6 +63,7 @@ export default function GiveSomeone() {
       <div className="justify-between" style={{ marginBottom: "30px" }}>
         <h1>Claim Rewards</h1>
       </div>
+      {loading && <Loader />}
       {!rows.length && !loading ? (
         <div className="empty-state">
           <img src="/empty.png" alt="" className="empty-state__img"></img>
