@@ -76,10 +76,10 @@ export default function GiveSomeone(props) {
           let people = res.data.people;
           let distinctPeople = [...new Set(people)]
           console.log(res.data.message + distinctPeople);
-          openSnackbar(res.data.message + distinctPeople, "success")
+          openSnackbar(res.data.message + distinctPeople + ". Meetup now!", "success")
         })
         .catch(e => console.log(e));
-    }, 2000);
+    }, 3000);
   }
 
   const handleSave = async () => {
@@ -160,10 +160,10 @@ export default function GiveSomeone(props) {
                       label="Item"
                     >
                     <MenuItem value={"Coffee"}>Coffee</MenuItem>
-                    <MenuItem value={"Gift Card"}>Gift Card</MenuItem>
                     <MenuItem value={"Juice"}>Juice</MenuItem>
                     <MenuItem value={"Cupcake"}>Cupcake</MenuItem>
                     <MenuItem value={"Voucher"}>Voucher</MenuItem>
+                    <MenuItem value={"Hot Chocolate"}>Hot Chocolate</MenuItem>
                     </Select>
                   </FormControl>
                   <input type="file" onChange={(e) => handleFile(e)}/>

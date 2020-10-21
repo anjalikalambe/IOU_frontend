@@ -59,8 +59,8 @@ export default function GiveSomeone() {
     <div id="give-someone">
       <div className="justify-between" style={{ marginBottom: "30px" }}>
         <h1>Favours</h1>
-        <Button variant="outlined" onClick={createFavour}>
-          + Create Favour
+        <Button variant="outlined" size="large" onClick={createFavour}>
+          + Create Favour/Reward
         </Button>
       </div>
       {!rows.length && !loading ? (

@@ -95,10 +95,10 @@ export default function PublicRequest(props) {
                     label="Your Reward"
                   >
                     <MenuItem value={"Coffee"}>Coffee</MenuItem>
-                    <MenuItem value={"Gift Card"}>Gift Card</MenuItem>
                     <MenuItem value={"Juice"}>Juice</MenuItem>
                     <MenuItem value={"Cupcake"}>Cupcake</MenuItem>
                     <MenuItem value={"Voucher"}>Voucher</MenuItem>
+                    <MenuItem value={"Hot Chocolate"}>Hot Chocolate</MenuItem>
                   </Select>
                 </FormControl>
               </form>
