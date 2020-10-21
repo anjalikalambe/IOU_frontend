@@ -68,7 +68,7 @@ export default function GiveSomeone(props) {
         auth = JSON.parse(auth);
         let token = auth.token;
 
-        axios.post("http://localhost:5000/favours/resolve", formData, { headers: { 'Authorization': token }, params: { id: favour._id } })
+        axios.post("/favours/resolve", formData, { headers: { 'Authorization': token }, params: { id: favour._id } })
             .then((res) => {
                 props.resolveFavour();
                 openSnackbar(res.data.message, "info");

@@ -67,26 +67,41 @@ export default function GiveSomeone(props) {
     setFile(e.target.files[0])
   }
 
-  const handleSave = () => {
+  const detectParty = (id) => {
+    let token = JSON.parse(localStorage.getItem('data')).token;
+    
+    setTimeout(function () {
+      axios.get("/favours/detectParty", { headers: { 'Authorization': token }, params: { "id": id } })
+        .then(res => {
+          let people = res.data.people;
+          let distinctPeople = [...new Set(people)]
+          console.log(res.data.message + distinctPeople);
+          openSnackbar(res.data.message + distinctPeople, "success")
+        })
+        .catch(e => console.log(e));
+    }, 2000);
+  }
+
+  const handleSave = async () => {
+    let id;
     const formData = new FormData();
     formData.append("favourImage", favourImage);
     formData.append('item', item);
     formData.append('owed_by', owed_by);
     formData.append('owed_to', owed_to);
     
-    let auth = localStorage.getItem('data');
-    auth = JSON.parse(auth);
-    let token = auth.token;
+    let token = JSON.parse(localStorage.getItem('data')).token;
     
-    axios.post("http://localhost:5000/favours/add", formData, { headers: { 'Authorization': token } })
+    await axios.post("/favours/add", formData, { headers: { 'Authorization': token } })
       .then((res) => {
         props.createFavour();
+        id = res.data.id;
         openSnackbar(res.data.message, "info");
       })
       .catch(e => {
         openSnackbar(e.response.data.message, "error");
       });
-
+    detectParty(id);
     handleClose();
   }
 

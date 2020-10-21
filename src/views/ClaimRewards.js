@@ -23,7 +23,7 @@ export default function GiveSomeone() {
     auth = JSON.parse(auth);
     let token = auth.token;
 
-    axios.get("http://localhost:5000/favours/earned/", {
+    axios.get("/favours/earned/", {
       headers: { Authorization: token },
     })
       .then((response) => {

@@ -15,7 +15,7 @@ export default function HomeLeaderboard() {
   
   const fetchLeaderboardUsers = () => {
     axios
-      .get("http://localhost:5000/users/leaderboard/")
+      .get("/users/leaderboard/")
       .then((response) => {
         setRows(response.data);
       })

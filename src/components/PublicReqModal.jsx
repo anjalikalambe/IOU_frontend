@@ -46,11 +46,9 @@ export default function PublicRequest(props) {
       description: name,
       rewards
     }
-    let auth = localStorage.getItem('data');
-    auth = JSON.parse(auth);
-    let token = auth.token;
+    let token = JSON.parse(localStorage.getItem('data')).token;
 
-    axios.post("http://localhost:5000/public/requests/add", body, { headers: {'Authorization': token}  })
+    axios.post("/public/requests/add", body, { headers: {'Authorization': token}  })
       .then(() => {
         console.log("Sucessfully created request");
         props.addRequest();

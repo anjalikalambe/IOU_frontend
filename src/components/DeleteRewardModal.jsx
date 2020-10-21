@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddReward(props) {
+export default function DeleteReward(props) {
   const classes = useStyles();
   const [item, setItem] = useState("");
 
@@ -38,18 +38,18 @@ export default function AddReward(props) {
   const handleSave = () => {
     const favour = props.selectedRow;
     let id = favour._id;
-    
+    console.log(id);
     let body = {
       item: item
     }
 
     let token = JSON.parse(localStorage.getItem('data')).token;
 
-    axios.post("/public/requests/addReward/", body, { headers: { 'Authorization': token }, params:{"id" : id}  })
+    axios.post("/public/requests/deleteReward/", body, { headers: { 'Authorization': token }, params:{"id" : id}  })
       .then(() => {
-        props.rewardAdded();
+        props.rewardDeleted();
       })
-      .catch(e => console.log("Could not add reward"));
+      .catch(e => console.log("Could not delete reward"));
     
     handleClose();
   };
@@ -71,12 +71,12 @@ export default function AddReward(props) {
         <Fade in={props.isOpen}>
           <div className={classes.paper}>
             <div>
-              <h2 id="transition-modal-title">Add a Reward</h2>
-              <span className="sub-title">(ONTO THE EXISTING REWARD LIST)</span>
+              <h2 id="transition-modal-title">Delete rewards you added</h2>
+              <span className="sub-title">(FROM THE EXISTING REWARD LIST)</span>
               <form className="modal">
                 <FormControl variant="outlined" className={classes.formControl}>
                   <InputLabel id="demo-simple-select-outlined-label">
-                    Your Reward
+                    Reward
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-outlined-label"

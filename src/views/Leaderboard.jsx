@@ -14,7 +14,7 @@ export default function GiveSomeone() {
   
   const fetchLeaderboardUsers = () => {
     axios
-      .get("http://localhost:5000/users/leaderboard/")
+      .get("/users/leaderboard/")
       .then((response) => {
         let users = response.data;
         setRows(users);

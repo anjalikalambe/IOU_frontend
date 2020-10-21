@@ -3,6 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import PublicReqModal from "../components/PublicReqModal.jsx";
 import AddReward from "../components/AddRewardModal.jsx";
+import DeleteReward from "../components/DeleteRewardModal.jsx";
 import ResolveReq from "../components/ResolveModal.jsx";
 import { TextField } from "@material-ui/core";
 import axios from "axios";
@@ -12,6 +13,7 @@ export default function PublicRequests() {
   const [showModal, setShowModal] = useState(false);
   const [showResolve, setShowResolve] = useState(false);
   const [showAddRewardModal, setShowAddRewardModal] = useState(false);
+  const [showDeleteRewardModal, setShowDeleteRewardModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
   const [rows, setRows] = useState([]);
   const [filter, setFilter] = useState("");
@@ -20,12 +22,11 @@ export default function PublicRequests() {
   const fetchPublicRequests = () => {
     setLoading(true);
     axios
-      .get("http://localhost:5000/public/requests/")
+      .get("/public/requests/")
       .then((response) => {
         setLoading(false);
         const requests = response.data;
         setRows(requests);
-        console.log("setRows(requests)");
       })
       .catch((e) => {
         setLoading(false);
@@ -39,6 +40,10 @@ export default function PublicRequests() {
   };
   const addReward = (row) => {
     setShowAddRewardModal(true);
+    setSelectedRow(row);
+  };
+  const deleteReward = (row) => {
+    setShowDeleteRewardModal(true);
     setSelectedRow(row);
   };
   const resolve = (row) => {
@@ -127,7 +132,16 @@ export default function PublicRequests() {
                         addReward(row);
                       }}
                     >
-                      Add Reward
+                    +
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        deleteReward(row);
+                      }}
+                    >
+                      -
                     </Button>
                     <Button
                       variant="contained"
@@ -166,6 +180,14 @@ export default function PublicRequests() {
         }}
         isOpen={showAddRewardModal}
         rewardAdded={fetchPublicRequests}
+      />
+      <DeleteReward
+        selectedRow={selectedRow} /*favour sent as prop for id*/
+        onClose={() => {
+          setShowDeleteRewardModal(false);
+        }}
+        isOpen={showDeleteRewardModal}
+        rewardDeleted={fetchPublicRequests}
       />
       <ResolveReq
         selectedRow={selectedRow} /*favour sent as prop for id*/

@@ -13,7 +13,7 @@ export default function HomeRequests() {
   const fetchPublicRequests = () => {
     setLoading(true);
     axios
-      .get("http://localhost:5000/public/requests/")
+      .get("/public/requests/")
       .then((response) => {
         setLoading(false);
         const requests = response.data;

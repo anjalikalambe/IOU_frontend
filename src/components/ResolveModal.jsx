@@ -71,16 +71,13 @@ export default function ResolvePublicReq(props) {
     let data = {
       id
     }
+    let token = JSON.parse(localStorage.getItem('data')).token;
 
-    let auth = localStorage.getItem('data');
-    auth = JSON.parse(auth);
-    let token = auth.token;
-
-    axios.post("http://localhost:5000/favours/createRequestRewards", formData,{ headers: { 'Authorization': token } })
+    axios.post("/favours/createRequestRewards", formData,{ headers: { 'Authorization': token } })
       .then(() => {console.log("Created rewards")})
       .catch(e => console.log("Could not create rewards"));
     
-    axios.post("http://localhost:5000/public/requests/delete", data,{ headers: { 'Authorization': token } })
+    axios.post("/public/requests/delete", data,{ headers: { 'Authorization': token } })
       .then(res => {
         console.log("Sucessfully resolved request")
         openSnackbar(res.data.message, "info");

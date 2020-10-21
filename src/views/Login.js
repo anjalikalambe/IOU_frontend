@@ -107,7 +107,7 @@ const Login = (props) => {
   const handleSignIn = async (e) => {
     e.preventDefault();
     try {
-      let response = await axios.post("http://localhost:5000/auth/login", {
+      let response = await axios.post("/auth/login", {
         username: state.username,
         password: state.password,
       });
@@ -127,7 +127,7 @@ const Login = (props) => {
     e.preventDefault();
     if (validateSignUp()) {
       try {
-        await axios.post("http://localhost:5000/auth/register", {
+        await axios.post("/auth/register", {
           username: state.username,
           password: state.password,
           confirmPassword: state.password,
