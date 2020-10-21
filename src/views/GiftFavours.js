@@ -41,9 +41,7 @@ export default function GiveSomeone() {
       const { data } = await axios.get("/favours/owed/", {
         headers: { Authorization: auth.token },
       });
-      console.log(data);
       setRows(data);
-      console.log(rows);
       setLoading(false);
     } catch (e) {
       setLoading(false);
