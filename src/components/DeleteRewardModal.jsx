@@ -11,6 +11,7 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import axios from "axios";
+import { useStore } from "../stores/helpers/UseStore";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -27,9 +28,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeleteReward(props) {
+  const { auth } = useStore();
   const classes = useStyles();
   const [item, setItem] = useState("");
-
+  const myRewards = () => {
+    if (!props.selectedRow.rewards) return;
+    return props.selectedRow.rewards.filter(
+      (reward) => reward.owed_by === auth.username
+    );
+  };
   const handleClose = () => {
     setItem("");
     props.onClose();
@@ -40,17 +47,21 @@ export default function DeleteReward(props) {
     let id = favour._id;
     console.log(id);
     let body = {
-      item: item
-    }
+      item: item,
+    };
 
-    let token = JSON.parse(localStorage.getItem('data')).token;
+    let token = JSON.parse(localStorage.getItem("data")).token;
 
-    axios.post("/public/requests/deleteReward/", body, { headers: { 'Authorization': token }, params:{"id" : id}  })
+    axios
+      .post("/public/requests/deleteReward/", body, {
+        headers: { Authorization: token },
+        params: { id: id },
+      })
       .then(() => {
         props.rewardDeleted();
       })
-      .catch(e => console.log("Could not delete reward"));
-    
+      .catch((e) => console.log("Could not delete reward"));
+
     handleClose();
   };
 
@@ -85,11 +96,12 @@ export default function DeleteReward(props) {
                     onChange={(e) => setItem(e.target.value)}
                     label="Your Reward"
                   >
-                    <MenuItem value={"Coffee"}>Coffee</MenuItem>
-                    <MenuItem value={"Juice"}>Juice</MenuItem>
-                    <MenuItem value={"Cupcake"}>Cupcake</MenuItem>
-                    <MenuItem value={"Voucher"}>Voucher</MenuItem>
-                    <MenuItem value={"Hot Chocolate"}>Hot Chocolate</MenuItem>
+                    {myRewards() &&
+                      myRewards().map((reward) => (
+                        <MenuItem key={Math.random(1000000)} value={reward.item}>
+                          {reward.item}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
               </form>

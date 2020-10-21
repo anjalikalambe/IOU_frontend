@@ -9,6 +9,7 @@ import { TablePagination, TextField } from "@material-ui/core";
 import axios from "axios";
 import "./PublicRequest.scss";
 import Loader from "../components/UI/Loader";
+import { useStore } from "../stores/helpers/UseStore.js";
 
 export default function PublicRequests() {
   const [showModal, setShowModal] = useState(false);
@@ -21,6 +22,8 @@ export default function PublicRequests() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(9);
+
+  const { auth } = useStore();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -43,6 +46,11 @@ export default function PublicRequests() {
         setLoading(false);
         console.log("Couldn't display the public requests." + e);
       });
+  };
+
+  const myRewards = (row) => {
+    if (!row.rewards) return;
+    return row.rewards.filter((reward) => reward.owed_by === auth.username);
   };
 
   const createFavour = () => {
@@ -124,58 +132,67 @@ export default function PublicRequests() {
           </Button>
         </div>
       </div>
-      {loading && <Loader />}
-      <Grid container spacing={3}>
-        {filterRows().length
-          ? filterRows()
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => (
-                <Grid item xs={4} key={index + Math.random(100000)}>
-                  <div className="card" key={row.item + index}>
-                    <div className="card--title">{row.description}</div>
-                    <div className="card--body">
-                      <span>Rewards: </span>
-                      {displayRewards(row.rewards)}
+      {loading ? (
+        <Loader />
+      ) : (
+        <Grid container spacing={3}>
+          {filterRows().length
+            ? filterRows()
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => (
+                  <Grid item xs={4} key={index + Math.random(100000)}>
+                    <div className="card" key={row.item + index}>
+                      <div className="card--title">{row.description}</div>
+                      <div className="card--body">
+                        <span>Rewards: </span>
+                        {displayRewards(row.rewards)}
+                      </div>
+                      <div className="btns">
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => {
+                            addReward(row);
+                          }}
+                        >
+                          +
+                        </Button>
+                        {myRewards(row).length ? (
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => {
+                              deleteReward(row);
+                            }}
+                          >
+                            -
+                          </Button>
+                        ) : null}
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            resolve(row);
+                          }}
+                        >
+                          Resolve
+                        </Button>
+                      </div>
                     </div>
-                    <div className="btns">
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => {
-                          addReward(row);
-                        }}
-                      >
-                        +
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => {
-                          deleteReward(row);
-                        }}
-                      >
-                        -
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          resolve(row);
-                        }}
-                      >
-                        Resolve
-                      </Button>
-                    </div>
-                  </div>
-                </Grid>
-              ))
-          : !loading && (
-              <div className="empty-state">
-                <img src="/empty.png" alt="" className="empty-state__img"></img>
-                <h2>Could not find any public requests</h2>
-              </div>
-            )}
-      </Grid>
+                  </Grid>
+                ))
+            : !loading && (
+                <div className="empty-state">
+                  <img
+                    src="/empty.png"
+                    alt=""
+                    className="empty-state__img"
+                  ></img>
+                  <h2>Could not find any public requests</h2>
+                </div>
+              )}
+        </Grid>
+      )}
       {filterRows().length > 9 && (
         <TablePagination
           rowsPerPageOptions={[9]}
