@@ -75,12 +75,16 @@ export default function ResolvePublicReq(props) {
     };
     let token = JSON.parse(localStorage.getItem("data")).token;
 
-    await axios
+        
+    axios
+      .post("/favours/createRequestRewards", formData, { headers: { Authorization: token } })
+      .then((res) => { console.log(res.data.message) })
+
+    axios
       .post("/public/requests/delete", data, {
-        headers: { Authorization: token },
+        headers: { Authorization: token }
       })
       .then((res) => {
-        console.log("Sucessfully resolved request");
         openSnackbar(res.data.message, "info");
         props.requestResolved();
       })
@@ -88,6 +92,7 @@ export default function ResolvePublicReq(props) {
         openSnackbar(e.response.data.message, "error");
         console.log("Could not resolve request");
       });
+
     setLoading(false);
 
     handleClose();

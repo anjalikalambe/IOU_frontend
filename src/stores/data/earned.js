@@ -18,7 +18,7 @@ export default class Earned {
   }
 
   *fetchFavours() {
-    console.log('called');
+    // console.log('called');
     let token = this.rootStore.auth.token
     this.loading = true;
     try {
