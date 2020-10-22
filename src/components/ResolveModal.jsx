@@ -56,7 +56,6 @@ export default function ResolvePublicReq(props) {
   const handleFile = (e) => {
     setFile(URL.createObjectURL(e.target.files[0]));
     setFavourImage(e.target.files[0]);
-
   };
 
   const handleSave = () => {
@@ -69,23 +68,31 @@ export default function ResolvePublicReq(props) {
     formData.append("rewards", JSON.stringify(favour.rewards));
 
     let data = {
-      id
-    }
-    let token = JSON.parse(localStorage.getItem('data')).token;
+      id,
+    };
+    let token = JSON.parse(localStorage.getItem("data")).token;
 
-    axios.post("/favours/createRequestRewards", formData,{ headers: { 'Authorization': token } })
-      .then(() => {console.log("Created rewards")})
-      .catch(e => console.log("Could not create rewards"));
-    
-    axios.post("/public/requests/delete", data,{ headers: { 'Authorization': token } })
-      .then(res => {
-        console.log("Sucessfully resolved request")
+    axios
+      .post("/favours/createRequestRewards", formData, {
+        headers: { Authorization: token },
+      })
+      .then(() => {
+        console.log("Created rewards");
+      })
+      .catch((e) => console.log("Could not create rewards"));
+
+    axios
+      .post("/public/requests/delete", data, {
+        headers: { Authorization: token },
+      })
+      .then((res) => {
+        console.log("Sucessfully resolved request");
         openSnackbar(res.data.message, "info");
         props.requestResolved();
       })
-      .catch(e => {
+      .catch((e) => {
         openSnackbar(e.response.data.message, "error");
-        console.log("Could not resolve request")
+        console.log("Could not resolve request");
       });
 
     handleClose();
@@ -122,16 +129,18 @@ export default function ResolvePublicReq(props) {
               <h2 id="transition-modal-title">Resolve Favour</h2>
               <form className="modal">
                 {file ? (
-                  <img
-                    alt=""
-                    src={file}
-                    style={{
-                      maxHeight: "350px",
-                      marginBottom: "20px",
-                      maxWidth: "800px",
-                      width: "auto",
-                    }}
-                  />
+                  <figure class="flex justify-center">
+                    <img
+                      alt=""
+                      src={file}
+                      style={{
+                        maxHeight: "350px",
+                        marginBottom: "20px",
+                        maxWidth: "800px",
+                        width: "auto",
+                      }}
+                    />
+                  </figure>
                 ) : null}
                 <input type="file" onChange={(e) => handleFile(e)} />
               </form>

@@ -239,16 +239,18 @@ export default function GiveSomeone(props) {
                   </Select>
                 </FormControl>
                 {file ? (
-                  <img
-                    alt=""
-                    src={file}
-                    style={{
-                      maxHeight: "350px",
-                      marginBottom: "20px",
-                      maxWidth: "800px",
-                      width: "auto",
-                    }}
-                  />
+                  <figure class="flex justify-center">
+                    <img
+                      alt=""
+                      src={file}
+                      style={{
+                        maxHeight: "350px",
+                        marginBottom: "20px",
+                        maxWidth: "800px",
+                        width: "auto",
+                      }}
+                    />
+                  </figure>
                 ) : null}
                 <input type="file" onChange={(e) => handleFile(e)} />
               </form>
