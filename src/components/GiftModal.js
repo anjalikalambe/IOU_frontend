@@ -70,7 +70,6 @@ export default function GiveSomeone(props) {
   };
 
   const validateFields = () => {
-    console.log(item, owed_to, file);
     if (props.status === "Favour") {
       return item && owed_to;
     } else {
@@ -95,7 +94,6 @@ export default function GiveSomeone(props) {
         .then((res) => {
           let people = res.data.people;
           let distinctPeople = [...new Set(people)];
-          console.log(res.data.message + distinctPeople);
           openSnackbar(
             res.data.message + distinctPeople + ". Meetup now!",
             "success"
@@ -139,10 +137,10 @@ export default function GiveSomeone(props) {
 
   const rewardChange = (e, newVal) => {
     setOwedBy(newVal);
-  }
+  };
   const favourChange = (e, newVal) => {
     setOwedTo(newVal);
-  }
+  };
 
   useEffect(() => {
     axios
