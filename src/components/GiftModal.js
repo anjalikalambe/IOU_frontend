@@ -226,16 +226,30 @@ export default function GiveSomeone(props) {
               </form>
               <div className="flex justify-between">
                 <Button onClick={handleClose}>Cancel</Button>
+                {props.status === "Reward" && (
                 <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  startIcon={<SaveIcon />}
-                  onClick={handleSave}
-                  disabled={!validateFields() || !file}
-                >
-                  Save
-                </Button>
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                startIcon={<SaveIcon />}
+                onClick={handleSave}
+                disabled={!validateFields() || !file}
+              >
+                Save
+              </Button>
+                )}
+                {props.status === "Favour" && (
+                <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                startIcon={<SaveIcon />}
+                onClick={handleSave}
+                disabled={!validateFields()}
+              >
+                Save
+              </Button>
+                )}
               </div>
             </div>
           </div>
