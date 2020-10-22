@@ -92,7 +92,7 @@ export default function HomeRequests() {
             <TextField
               label="Filter by task or reward"
               variant="outlined"
-              onChange={(e) => setFilter(e.target.value)}
+              onChange={(e) => setFilter(e.target.value.toLowerCase())}
             />
           </div>
         </div>

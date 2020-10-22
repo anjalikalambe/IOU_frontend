@@ -96,7 +96,7 @@ export default function GiveSomeone(props) {
           );
         })
         .catch((e) => console.log(e));
-    }, 3000);
+    }, 1000);
   };
 
   const handleSave = async () => {
@@ -207,9 +207,7 @@ export default function GiveSomeone(props) {
                     <MenuItem value={"Hot Chocolate"}>Hot Chocolate</MenuItem>
                   </Select>
                 </FormControl>
-                {props.status === "Reward" && (
                   <input type="file" onChange={(e) => handleFile(e)} />
-                )}
               </form>
               <div className="flex justify-between">
                 <Button onClick={handleClose}>Cancel</Button>

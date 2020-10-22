@@ -121,7 +121,7 @@ export default function PublicRequests() {
           <TextField
             label="Filter by task or reward"
             variant="outlined"
-            onChange={(e) => setFilter(e.target.value)}
+            onChange={(e) => setFilter(e.target.value.toLowerCase())}
           />
           <Button
             variant="outlined"

@@ -87,13 +87,12 @@ function GiveSomeone() {
                         <TableCell className="img-wrapper">
                           <div className="align-center">
                             {row.openImgURL ? (
-                              <a href={row.openImgURL}>
                                 <img
                                   className="img-favour"
                                   src={row.openImgURL}
                                   alt=""
+                                  onClick={()=> window.open(row.closeImgURL, "_blank")}
                                 />
-                              </a>
                             ) : (
                               "Not provided"
                             )}
@@ -102,13 +101,12 @@ function GiveSomeone() {
                         <TableCell className="img-wrapper">
                           <div className="align-center">
                             {row.closeImgURL ? (
-                              <a href={row.closeImgURL}>
                                 <img
                                   className="img-favour"
                                   src={row.closeImgURL}
                                   alt=""
+                                  onClick={()=> window.open(row.closeImgURL, "_blank")}
                                 />
-                              </a>
                             ) : (
                               "Not provided"
                             )}
