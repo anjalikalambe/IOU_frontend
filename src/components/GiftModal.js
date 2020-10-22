@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import Button from "@material-ui/core/Button";
+import SaveIcon from "@material-ui/icons/Save";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
 import axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import { useStore } from "../stores/helpers/UseStore";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -20,32 +21,33 @@ function Alert(props) {
 
 const useStyles = makeStyles((theme) => ({
   modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   paper: {
-    border: 'none',
-    backgroundColor: 'white',
-    padding: '25px 30px',
-    borderRadius: '4px'
+    border: "none",
+    backgroundColor: "white",
+    padding: "25px 30px",
+    borderRadius: "4px",
   },
 }));
 
-
 export default function GiveSomeone(props) {
   const classes = useStyles();
-  const [favourImage, setFile] = useState('');
-  const [item, setItem] = useState('')
-  
-  const [owed_by, setOwedBy] = useState('')
-  const [owed_to, setOwedTo] = useState('')
+  const [favourImage, setFile] = useState("");
+  const [item, setItem] = useState("");
+
+  const [owed_by, setOwedBy] = useState("");
+  const [owed_to, setOwedTo] = useState("");
 
   const [snackbarState, setSnackbarState] = useState({
     open: false,
     message: "",
     type: "info",
   });
+
+  const { auth, owed, earned } = useStore();
 
   const { open, message, type } = snackbarState;
 
@@ -58,57 +60,80 @@ export default function GiveSomeone(props) {
 
   const handleClose = () => {
     props.onClose();
-    setOwedBy('');
-    setOwedTo('');
-    setItem('');
+    setOwedBy("");
+    setOwedTo("");
+    setItem("");
+  };
+
+  const validateFields = () => {
+    if (props.status === "Favour") {
+      return item && owed_to;
+    } else {
+      return item && owed_by;
+    }
   };
 
   const handleFile = (e) => {
-    setFile(e.target.files[0])
-  }
+    setFile(e.target.files[0]);
+  };
 
   const detectParty = (id) => {
-    let token = JSON.parse(localStorage.getItem('data')).token;
-    
+    let token = JSON.parse(localStorage.getItem("data")).token;
+
     setTimeout(function () {
-      axios.get("/favours/detectParty", { headers: { 'Authorization': token }, params: { "id": id } })
-        .then(res => {
-          let people = res.data.people;
-          let distinctPeople = [...new Set(people)]
-          console.log(res.data.message + distinctPeople);
-          openSnackbar(res.data.message + distinctPeople + ". Meetup now!", "success")
+      axios
+        .get("/favours/detectParty", {
+          headers: { Authorization: token },
+          params: { id: id },
         })
-        .catch(e => console.log(e));
+        .then((res) => {
+          let people = res.data.people;
+          let distinctPeople = [...new Set(people)];
+          console.log(res.data.message + distinctPeople);
+          openSnackbar(
+            res.data.message + distinctPeople + ". Meetup now!",
+            "success"
+          );
+        })
+        .catch((e) => console.log(e));
     }, 3000);
-  }
+  };
 
   const handleSave = async () => {
     let id;
     const formData = new FormData();
     formData.append("favourImage", favourImage);
-    formData.append('item', item);
-    formData.append('owed_by', owed_by);
-    formData.append('owed_to', owed_to);
-    
-    let token = JSON.parse(localStorage.getItem('data')).token;
-    
+    formData.append("item", item);
+    formData.append(
+      "owed_by",
+      props.status === "Favour" ? auth.username : owed_by
+    );
+    formData.append(
+      "owed_to",
+      props.status === "Reward" ? auth.username : owed_to
+    );
+
     handleClose();
-    
-    await axios.post("/favours/add", formData, { headers: { 'Authorization': token } })
+
+    await axios
+      .post("/favours/add", formData, {
+        headers: { Authorization: auth.token },
+      })
       .then((res) => {
-        props.createFavour();
         id = res.data.id;
         openSnackbar(res.data.message, "info");
       })
-      .catch(e => {
+      .catch((e) => {
         openSnackbar(e.response.data.message, "error");
       });
     detectParty(id);
-  }
+    owed.fetchFavours();
+    earned.fetchFavours();
+  };
 
   return (
     <div id="giftModal">
-        <Snackbar
+      <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={open}
         onClose={closeSnackbar}
@@ -133,59 +158,76 @@ export default function GiveSomeone(props) {
       >
         <Fade in={props.isOpen}>
           <div className={classes.paper}>
-              <div>
-                <h2 id="transition-modal-title">
-                  Create a favour
-                </h2>
-                <span className="sub-title">(THAT YOU OWE)</span>
-                <form className="modal">
+            <div>
+              <h2 id="transition-modal-title">
+                {props.status === "Favour"
+                  ? "Create A Favour"
+                  : "Ask For Repayment"}
+              </h2>
+              <span className="sub-title">
+                (
+                {props.status === "Favour"
+                  ? "THAT YOU OWE"
+                  : "THAT SOMEONE OWES YOU"}
+                )
+              </span>
+              <form className="modal">
+                {props.status === "Reward" && (
                   <TextField
                     label="Favour is owed by user..."
                     variant="outlined"
                     value={owed_by}
                     onChange={(e) => setOwedBy(e.target.value)}
                   />
+                )}
+                {props.status === "Favour" && (
                   <TextField
                     label="Favour is owed to user..."
                     variant="outlined"
                     value={owed_to}
                     onChange={(e) => setOwedTo(e.target.value)}
                   />
-                  <FormControl variant="outlined" className={classes.formControl}>
-                    <InputLabel id="demo-simple-select-outlined-label">Item</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-outlined-label"
-                      id="demo-simple-select-outlined"
-                      value={item}
-                      onChange={(e) => setItem(e.target.value)}
-                      label="Item"
-                    >
+                )}
+
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel id="demo-simple-select-outlined-label">
+                    Item
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-outlined-label"
+                    id="demo-simple-select-outlined"
+                    value={item}
+                    onChange={(e) => setItem(e.target.value)}
+                    label="Item"
+                  >
                     <MenuItem value={"Coffee"}>Coffee</MenuItem>
                     <MenuItem value={"Juice"}>Juice</MenuItem>
                     <MenuItem value={"Cupcake"}>Cupcake</MenuItem>
                     <MenuItem value={"Voucher"}>Voucher</MenuItem>
                     <MenuItem value={"Hot Chocolate"}>Hot Chocolate</MenuItem>
-                    </Select>
-                  </FormControl>
-                  <input type="file" onChange={(e) => handleFile(e)}/>
-                </form>
-                <div className="flex justify-between">
-                  <Button onClick={handleClose}>Cancel</Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    startIcon={<SaveIcon />}
-                    onClick={handleSave}
-                    disabled={!item || !owed_by || !owed_to}
-                  >
-                    Save
-                  </Button>
-                </div>
+                  </Select>
+                </FormControl>
+                {props.status === "Reward" && (
+                  <input type="file" onChange={(e) => handleFile(e)} />
+                )}
+              </form>
+              <div className="flex justify-between">
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  startIcon={<SaveIcon />}
+                  onClick={handleSave}
+                  disabled={!validateFields()}
+                >
+                  Save
+                </Button>
               </div>
+            </div>
           </div>
         </Fade>
       </Modal>
     </div>
-  )
+  );
 }

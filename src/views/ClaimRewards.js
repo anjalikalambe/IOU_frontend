@@ -9,17 +9,19 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseFavourModal from "../components/CloseFavourModal";
-import axios from "axios";
 import { TablePagination } from "@material-ui/core";
 import Loader from "../components/UI/Loader";
+import { useStore } from "../stores/helpers/UseStore";
+import { observer } from "mobx-react-lite";
 
-export default function GiveSomeone() {
+function GiveSomeone() {
   const [showResolveModal, setResolveShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
-  const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const { earned } = useStore();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -29,24 +31,8 @@ export default function GiveSomeone() {
     setPage(0);
   };
 
-  const fetchRewards = () => {
-    setLoading(true);
-    let auth = localStorage.getItem("data");
-    auth = JSON.parse(auth);
-    let token = auth.token;
-
-    axios.get("/favours/earned/", {
-      headers: { Authorization: token },
-    })
-      .then((response) => {
-        setLoading(false);
-        const requests = response.data;
-        setRows(requests);
-      })
-      .catch((e) => {
-        setLoading(false);
-        console.log(`Couldn't display the rewards earned by user.`);
-      });
+  const fetchRewards = async () => {
+    await earned.fetchFavours();
   }
 
   const resolve = (row) => {
@@ -58,13 +44,17 @@ export default function GiveSomeone() {
     fetchRewards();
   }, []);
 
+  useEffect(() => {
+    setLoading(earned.loading);
+  }, [earned.loading])
+
   return (
     <div id="give-someone">
       <div className="justify-between" style={{ marginBottom: "30px" }}>
         <h1>Claim Rewards</h1>
       </div>
       {loading && <Loader />}
-      {!rows.length && !loading ? (
+      {!earned.rows.length && !loading ? (
         <div className="empty-state">
           <img src="/empty.png" alt="" className="empty-state__img"></img>
           <h2>Nobody owes you any favours</h2>
@@ -86,7 +76,7 @@ export default function GiveSomeone() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                  {rows
+                  {earned.rows
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => (
                   <TableRow key={row.owed_by + index}>
@@ -148,11 +138,11 @@ export default function GiveSomeone() {
               </TableBody>
             </Table>
             </TableContainer>
-            {rows.length > 10 && (
+            {earned.rows.length > 10 && (
               <TablePagination
                 rowsPerPageOptions={[10]}
                 component="div"
-                count={rows.length}
+                count={earned.rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}
@@ -176,3 +166,5 @@ export default function GiveSomeone() {
     </div>
   );
 }
+
+export default observer(GiveSomeone);

@@ -8,24 +8,21 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import GiftModal from "../components/GiftModal.js";
 import CloseFavourModal from "../components/CloseFavourModal";
 import "./GiftFavours.scss";
-import axios from "axios";
 import Loader from "../components/UI/Loader";
 import { TablePagination } from "@material-ui/core";
 import { useStore } from "../stores/helpers/UseStore.js";
+import { toJS } from "mobx";
+import { observer } from "mobx-react-lite";
 
-export default function GiveSomeone() {
-  const [showFavourModal, setFavourShowModal] = useState(false);
+function GiveSomeone() {
   const [showResolveModal, setResolveShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
-  const [initialRows, setInitialRows] = useState([]);
-  const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const { auth } = useStore();
+  const { owed } = useStore();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -36,24 +33,7 @@ export default function GiveSomeone() {
   };
 
   const fetchFavours = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axios.get("/favours/owed/", {
-        headers: { Authorization: auth.token },
-      });
-      setRows(data);
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      console.log(`Couldn't display the favours owed by user.`);
-    }
-  };
-
-  console.log(rows);
-
-  const createFavour = () => {
-    setFavourShowModal(true);
-    setSelectedRow({});
+    await owed.fetchFavours();
   };
 
   const resolve = (row) => {
@@ -65,16 +45,17 @@ export default function GiveSomeone() {
     fetchFavours();
   }, []);
 
+  useEffect(() => {
+    setLoading(owed.loading);
+  }, [owed.loading])
+
   return (
     <div id="give-someone">
       <div className="justify-between" style={{ marginBottom: "30px" }}>
         <h1>Favours</h1>
-        <Button variant="outlined" size="large" onClick={createFavour}>
-          + Create Favour/Reward
-        </Button>
       </div>
       {loading && <Loader />}
-      {!rows.length && !loading ? (
+      {!owed.rows.length && !loading ? (
         <div className="empty-state">
           <img src="/empty.png" alt="" className="empty-state__img"></img>
           <h2>You don't owe any favours!</h2>
@@ -97,7 +78,7 @@ export default function GiveSomeone() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows
+                  {toJS(owed.rows)
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => (
                       <TableRow key={row.owed_to + index}>
@@ -163,11 +144,11 @@ export default function GiveSomeone() {
                 </TableBody>
               </Table>
             </TableContainer>
-            {rows.length > 10 && (
+            {owed.rows.length > 10 && (
               <TablePagination
                 rowsPerPageOptions={[10]}
                 component="div"
-                count={rows.length}
+                count={owed.rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}
@@ -177,18 +158,6 @@ export default function GiveSomeone() {
           </>
         )
       )}
-
-      <GiftModal
-        selectedRow={selectedRow}
-        onClose={() => {
-          setFavourShowModal(false);
-          setTimeout(() => {
-            setSelectedRow({});
-          }, 500);
-        }}
-        isOpen={showFavourModal}
-        createFavour={fetchFavours}
-      />
 
       <CloseFavourModal
         selectedRow={selectedRow}
@@ -204,3 +173,5 @@ export default function GiveSomeone() {
     </div>
   );
 }
+
+export default observer(GiveSomeone);
