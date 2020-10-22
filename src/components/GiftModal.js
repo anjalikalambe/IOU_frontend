@@ -35,7 +35,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function GiveSomeone(props) {
   const classes = useStyles();
-  const [favourImage, setFile] = useState("");
+  const [favourImage, setFavourImage] = useState("");
+  const [file, setFile] = useState("");
   const [item, setItem] = useState("");
 
   const [owed_by, setOwedBy] = useState("");
@@ -63,6 +64,7 @@ export default function GiveSomeone(props) {
     setOwedBy("");
     setOwedTo("");
     setItem("");
+    setFile("");
   };
 
   const validateFields = () => {
@@ -74,7 +76,8 @@ export default function GiveSomeone(props) {
   };
 
   const handleFile = (e) => {
-    setFile(e.target.files[0]);
+    setFile(URL.createObjectURL(e.target.files[0]));
+    setFavourImage(e.target.files[0]);
   };
 
   const detectParty = (id) => {
@@ -207,7 +210,19 @@ export default function GiveSomeone(props) {
                     <MenuItem value={"Hot Chocolate"}>Hot Chocolate</MenuItem>
                   </Select>
                 </FormControl>
-                  <input type="file" onChange={(e) => handleFile(e)} />
+                {file ? (
+                  <img
+                    alt=""
+                    src={file}
+                    style={{
+                      maxHeight: "350px",
+                      marginBottom: "20px",
+                      maxWidth: "800px",
+                      width: "auto",
+                    }}
+                  />
+                ) : null}
+                <input type="file" onChange={(e) => handleFile(e)} />
               </form>
               <div className="flex justify-between">
                 <Button onClick={handleClose}>Cancel</Button>
@@ -217,7 +232,7 @@ export default function GiveSomeone(props) {
                   className={classes.button}
                   startIcon={<SaveIcon />}
                   onClick={handleSave}
-                  disabled={!validateFields()}
+                  disabled={!validateFields() || !file}
                 >
                   Save
                 </Button>
