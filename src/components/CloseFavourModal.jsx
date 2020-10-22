@@ -51,6 +51,7 @@ export default function GiveSomeone(props) {
   const handleClose = () => {
     props.onClose();
     setFile("");
+    setFavourImage("");
   };
 
   const handleFile = (e) => {

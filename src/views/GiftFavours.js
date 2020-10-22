@@ -47,7 +47,7 @@ function GiveSomeone() {
 
   useEffect(() => {
     setLoading(owed.loading);
-  }, [owed.loading])
+  }, [owed.loading]);
 
   return (
     <div id="give-someone">
@@ -87,12 +87,14 @@ function GiveSomeone() {
                         <TableCell className="img-wrapper">
                           <div className="align-center">
                             {row.openImgURL ? (
-                                <img
-                                  className="img-favour"
-                                  src={row.openImgURL}
-                                  alt=""
-                                  onClick={()=> window.open(row.closeImgURL, "_blank")}
-                                />
+                              <img
+                                className="img-favour"
+                                src={row.openImgURL}
+                                alt=""
+                                onClick={() =>
+                                  window.open(row.closeImgURL, "_blank")
+                                }
+                              />
                             ) : (
                               "Not provided"
                             )}
@@ -101,12 +103,14 @@ function GiveSomeone() {
                         <TableCell className="img-wrapper">
                           <div className="align-center">
                             {row.closeImgURL ? (
-                                <img
-                                  className="img-favour"
-                                  src={row.closeImgURL}
-                                  alt=""
-                                  onClick={()=> window.open(row.closeImgURL, "_blank")}
-                                />
+                              <img
+                                className="img-favour"
+                                src={row.closeImgURL}
+                                alt=""
+                                onClick={() =>
+                                  window.open(row.closeImgURL, "_blank")
+                                }
+                              />
                             ) : (
                               "Not provided"
                             )}
@@ -116,16 +120,9 @@ function GiveSomeone() {
                           <div className="align-center">
                             {row.completed ||
                             (row.openImgURL && row.closeImgURL) ? (
-                              <>
-                                <img
-                                  className="img-favour"
-                                  alt=""
-                                  src={row.status}
-                                />
-                                <CheckCircleIcon
-                                  style={{ color: "green", fontSize: "30px" }}
-                                />
-                              </>
+                              <CheckCircleIcon
+                                style={{ color: "green", fontSize: "30px" }}
+                              />
                             ) : (
                               <Button
                                 variant="contained"

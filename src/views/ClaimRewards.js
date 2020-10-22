@@ -89,7 +89,7 @@ function GiveSomeone() {
                               className="img-favour"
                               src={row.openImgURL}
                               alt=""
-                              onClick={()=> window.open(row.closeImgURL, "_blank")}
+                              onClick={()=> window.open(row.openImgURL, "_blank")}
                             />
                         ) : (
                           "Not provided"
