@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
@@ -14,6 +14,7 @@ import axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useStore } from "../stores/helpers/UseStore";
+import { Autocomplete } from "@material-ui/lab";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -41,6 +42,7 @@ export default function GiveSomeone(props) {
 
   const [owed_by, setOwedBy] = useState("");
   const [owed_to, setOwedTo] = useState("");
+  const [users, setUsers] = useState([]);
 
   const [snackbarState, setSnackbarState] = useState({
     open: false,
@@ -68,6 +70,7 @@ export default function GiveSomeone(props) {
   };
 
   const validateFields = () => {
+    console.log(item, owed_to, file);
     if (props.status === "Favour") {
       return item && owed_to;
     } else {
@@ -134,6 +137,21 @@ export default function GiveSomeone(props) {
     earned.fetchFavours();
   };
 
+  const rewardChange = (e, newVal) => {
+    setOwedBy(newVal);
+  }
+  const favourChange = (e, newVal) => {
+    setOwedTo(newVal);
+  }
+
+  useEffect(() => {
+    axios
+      .get("/users", {
+        headers: { Authorization: auth.token },
+      })
+      .then((res) => setUsers(res.data));
+  }, []);
+
   return (
     <div id="giftModal">
       <Snackbar
@@ -176,19 +194,31 @@ export default function GiveSomeone(props) {
               </span>
               <form className="modal">
                 {props.status === "Reward" && (
-                  <TextField
-                    label="Favour is owed by user..."
-                    variant="outlined"
+                  <Autocomplete
+                    options={users}
                     value={owed_by}
-                    onChange={(e) => setOwedBy(e.target.value)}
+                    onChange={rewardChange}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Favour is owed by user..."
+                        variant="outlined"
+                      />
+                    )}
                   />
                 )}
                 {props.status === "Favour" && (
-                  <TextField
-                    label="Favour is owed to user..."
-                    variant="outlined"
+                  <Autocomplete
+                    options={users}
+                    onChange={favourChange}
                     value={owed_to}
-                    onChange={(e) => setOwedTo(e.target.value)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Favour is owed to user..."
+                        variant="outlined"
+                      />
+                    )}
                   />
                 )}
 
@@ -227,28 +257,28 @@ export default function GiveSomeone(props) {
               <div className="flex justify-between">
                 <Button onClick={handleClose}>Cancel</Button>
                 {props.status === "Reward" && (
-                <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                startIcon={<SaveIcon />}
-                onClick={handleSave}
-                disabled={!validateFields() || !file}
-              >
-                Save
-              </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    startIcon={<SaveIcon />}
+                    onClick={handleSave}
+                    disabled={!validateFields() || !file}
+                  >
+                    Save
+                  </Button>
                 )}
                 {props.status === "Favour" && (
-                <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                startIcon={<SaveIcon />}
-                onClick={handleSave}
-                disabled={!validateFields()}
-              >
-                Save
-              </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    startIcon={<SaveIcon />}
+                    onClick={handleSave}
+                    disabled={!validateFields()}
+                  >
+                    Save
+                  </Button>
                 )}
               </div>
             </div>
