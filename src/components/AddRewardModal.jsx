@@ -11,6 +11,7 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import axios from "axios";
+import Loader from './UI/MiniLoader'
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -29,13 +30,15 @@ const useStyles = makeStyles((theme) => ({
 export default function AddReward(props) {
   const classes = useStyles();
   const [item, setItem] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
     setItem("");
     props.onClose();
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    setLoading(true);
     const favour = props.selectedRow;
     let id = favour._id;
     
@@ -45,12 +48,12 @@ export default function AddReward(props) {
 
     let token = JSON.parse(localStorage.getItem('data')).token;
 
-    axios.post("/public/requests/addReward/", body, { headers: { 'Authorization': token }, params:{"id" : id}  })
+    await axios.post("/public/requests/addReward/", body, { headers: { 'Authorization': token }, params:{"id" : id}  })
       .then(() => {
         props.rewardAdded();
       })
       .catch(e => console.log("Could not add reward"));
-    
+    setLoading(false);
     handleClose();
   };
 
@@ -99,11 +102,11 @@ export default function AddReward(props) {
                   variant="contained"
                   color="primary"
                   className={classes.button}
-                  startIcon={<SaveIcon />}
+                  startIcon={!loading && <SaveIcon />}
                   onClick={handleSave}
-                  disabled={!item}
+                  disabled={!item || loading}
                 >
-                  Save
+                  {loading ? <Loader /> : "Save"}
                 </Button>
               </div>
             </div>

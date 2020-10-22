@@ -15,6 +15,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useStore } from "../stores/helpers/UseStore";
 import { Autocomplete } from "@material-ui/lab";
+import Loader from "./UI/MiniLoader";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -43,6 +44,7 @@ export default function GiveSomeone(props) {
   const [owed_by, setOwedBy] = useState("");
   const [owed_to, setOwedTo] = useState("");
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [snackbarState, setSnackbarState] = useState({
     open: false,
@@ -105,6 +107,7 @@ export default function GiveSomeone(props) {
   };
 
   const handleSave = async () => {
+    setLoading(true);
     let id;
     const formData = new FormData();
     formData.append("favourImage", favourImage);
@@ -117,19 +120,22 @@ export default function GiveSomeone(props) {
       "owed_to",
       props.status === "Reward" ? auth.username : owed_to
     );
-
-    handleClose();
-
+    console.log(loading);
     await axios
       .post("/favours/add", formData, {
         headers: { Authorization: auth.token },
       })
       .then((res) => {
+        setLoading(false);
+        console.log(loading);
         id = res.data.id;
         openSnackbar(res.data.message, "info");
+        handleClose();
       })
       .catch((e) => {
+        setLoading(false);
         openSnackbar(e.response.data.message, "error");
+        handleClose();
       });
     detectParty(id);
     owed.fetchFavours();
@@ -240,7 +246,7 @@ export default function GiveSomeone(props) {
                   </Select>
                 </FormControl>
                 {file ? (
-                  <figure class="flex justify-center">
+                  <figure className="flex justify-center">
                     <img
                       alt=""
                       src={file}
@@ -262,11 +268,11 @@ export default function GiveSomeone(props) {
                     variant="contained"
                     color="primary"
                     className={classes.button}
-                    startIcon={<SaveIcon />}
+                    startIcon={!loading && <SaveIcon />}
                     onClick={handleSave}
-                    disabled={!validateFields() || !file}
+                    disabled={!validateFields() || !file || loading}
                   >
-                    Save
+                    {loading ? <Loader style={{ paddingTop: "0" }} /> : "Save"}
                   </Button>
                 )}
                 {props.status === "Favour" && (
@@ -274,11 +280,12 @@ export default function GiveSomeone(props) {
                     variant="contained"
                     color="primary"
                     className={classes.button}
-                    startIcon={<SaveIcon />}
+                    startIcon={!loading && <SaveIcon />}
                     onClick={handleSave}
                     disabled={!validateFields()}
+                    disabled={!validateFields() || loading}
                   >
-                    Save
+                    {loading ? <Loader /> : "Save"}
                   </Button>
                 )}
               </div>

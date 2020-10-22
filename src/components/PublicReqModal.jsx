@@ -10,6 +10,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import Loader from './UI/MiniLoader'
 import axios from "axios";
 
 
@@ -31,6 +32,7 @@ export default function PublicRequest(props) {
   const classes = useStyles();
   const [item, setItem] = useState("");
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
     setItem("");
@@ -38,7 +40,8 @@ export default function PublicRequest(props) {
     props.onClose();
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    setLoading(true);
     let rewards = {
       item: item
     }
@@ -48,13 +51,13 @@ export default function PublicRequest(props) {
     }
     let token = JSON.parse(localStorage.getItem('data')).token;
 
-    axios.post("/public/requests/add", body, { headers: {'Authorization': token}  })
+    await axios.post("/public/requests/add", body, { headers: {'Authorization': token}  })
       .then(() => {
         console.log("Sucessfully created request");
         props.addRequest();
       })
       .catch(e => console.log("Could not create request"));
-    
+    setLoading(false);
     handleClose();
   };
 
@@ -108,11 +111,11 @@ export default function PublicRequest(props) {
                   variant="contained"
                   color="primary"
                   className={classes.button}
-                  startIcon={<SaveIcon />}
+                  startIcon={!loading && <SaveIcon />}
                   onClick={handleSave}
-                  disabled={!item}
+                  disabled={!item || loading}
                 >
-                  Save
+                  {loading ? <Loader /> : "Save"}
                 </Button>
               </div>
             </div>

@@ -119,7 +119,7 @@ export default function GiveSomeone(props) {
                   className={classes.formControl}
                 ></FormControl>
                 {file ? (
-                  <figure class="flex justify-center">
+                  <figure className="flex justify-center">
                     <img
                       alt=""
                       src={file}

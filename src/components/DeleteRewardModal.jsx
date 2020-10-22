@@ -12,6 +12,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import axios from "axios";
 import { useStore } from "../stores/helpers/UseStore";
+import Loader from './UI/MiniLoader'
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -31,6 +32,8 @@ export default function DeleteReward(props) {
   const { auth } = useStore();
   const classes = useStyles();
   const [item, setItem] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const myRewards = () => {
     if (!props.selectedRow.rewards) return;
     return props.selectedRow.rewards.filter(
@@ -42,7 +45,8 @@ export default function DeleteReward(props) {
     props.onClose();
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    setLoading(true);
     const favour = props.selectedRow;
     let id = favour._id;
     console.log(id);
@@ -52,7 +56,7 @@ export default function DeleteReward(props) {
 
     let token = JSON.parse(localStorage.getItem("data")).token;
 
-    axios
+    await axios
       .post("/public/requests/deleteReward/", body, {
         headers: { Authorization: token },
         params: { id: id },
@@ -61,7 +65,7 @@ export default function DeleteReward(props) {
         props.rewardDeleted();
       })
       .catch((e) => console.log("Could not delete reward"));
-
+    setLoading(false);
     handleClose();
   };
 
@@ -98,7 +102,10 @@ export default function DeleteReward(props) {
                   >
                     {myRewards() &&
                       myRewards().map((reward) => (
-                        <MenuItem key={Math.random(1000000)} value={reward.item}>
+                        <MenuItem
+                          key={Math.random(1000000)}
+                          value={reward.item}
+                        >
                           {reward.item}
                         </MenuItem>
                       ))}
@@ -111,11 +118,11 @@ export default function DeleteReward(props) {
                   variant="contained"
                   color="primary"
                   className={classes.button}
-                  startIcon={<SaveIcon />}
+                  startIcon={!loading && <SaveIcon />}
                   onClick={handleSave}
-                  disabled={!item}
+                  disabled={!item || loading}
                 >
-                  Save
+                  {loading ? <Loader /> : "Resolve"}
                 </Button>
               </div>
             </div>

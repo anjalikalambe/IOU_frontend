@@ -9,6 +9,7 @@ import Fade from "@material-ui/core/Fade";
 import axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import Loader from "./UI/MiniLoader";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -32,6 +33,7 @@ export default function ResolvePublicReq(props) {
   const classes = useStyles();
   const [file, setFile] = useState("");
   const [favourImage, setFavourImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [snackbarState, setSnackbarState] = useState({
     open: false,
@@ -58,7 +60,8 @@ export default function ResolvePublicReq(props) {
     setFavourImage(e.target.files[0]);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    setLoading(true);
     let favour = props.selectedRow;
     const id = favour._id;
     const formData = new FormData();
@@ -72,16 +75,7 @@ export default function ResolvePublicReq(props) {
     };
     let token = JSON.parse(localStorage.getItem("data")).token;
 
-    axios
-      .post("/favours/createRequestRewards", formData, {
-        headers: { Authorization: token },
-      })
-      .then(() => {
-        console.log("Created rewards");
-      })
-      .catch((e) => console.log("Could not create rewards"));
-
-    axios
+    await axios
       .post("/public/requests/delete", data, {
         headers: { Authorization: token },
       })
@@ -94,6 +88,7 @@ export default function ResolvePublicReq(props) {
         openSnackbar(e.response.data.message, "error");
         console.log("Could not resolve request");
       });
+    setLoading(false);
 
     handleClose();
   };
@@ -129,7 +124,7 @@ export default function ResolvePublicReq(props) {
               <h2 id="transition-modal-title">Resolve Favour</h2>
               <form className="modal">
                 {file ? (
-                  <figure class="flex justify-center">
+                  <figure className="flex justify-center">
                     <img
                       alt=""
                       src={file}
@@ -150,11 +145,11 @@ export default function ResolvePublicReq(props) {
                   variant="contained"
                   color="primary"
                   className={classes.button}
-                  startIcon={<SaveIcon />}
+                  startIcon={!loading && <SaveIcon />}
                   onClick={handleSave}
-                  disabled={!file}
+                  disabled={!file || loading}
                 >
-                  Resolve
+                  {loading ? <Loader /> : "Resolve"}
                 </Button>
               </div>
             </div>
