@@ -20,6 +20,7 @@ function GiveSomeone() {
   const [selectedRow, setSelectedRow] = useState({});
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [status, setStatus] = useState("");
 
   const { earned } = useStore();
 
@@ -35,9 +36,10 @@ function GiveSomeone() {
     await earned.fetchFavours();
   }
 
-  const resolve = (row) => {
+  const resolve = (row, payload) => {
     setResolveShowModal(true);
     setSelectedRow(row);
+    setStatus(payload);
   };
 
   useEffect(() => {
@@ -124,7 +126,7 @@ function GiveSomeone() {
                           <Button
                             variant="contained"
                             color="primary"
-                            onClick={() => resolve(row)}
+                            onClick={() => resolve(row, 'Reward')}
                           >
                             Resolve
                           </Button>
@@ -160,6 +162,7 @@ function GiveSomeone() {
         }}
         isOpen={showResolveModal}
         resolveFavour={fetchRewards}
+        status={status}
       />
     </div>
   );
