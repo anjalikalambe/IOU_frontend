@@ -93,7 +93,7 @@ const Login = (props) => {
     if (state.password.length < 6) {
       setPasswordError({
         error: true,
-        message: "Please input a stronger password",
+        message: "Password must be atleast 6 characters",
       });
       valid = false;
     } else {
