@@ -62,11 +62,12 @@ export default function GiveSomeone(props) {
   };
 
   const handleClose = () => {
-    props.onClose();
     setOwedBy("");
     setOwedTo("");
     setItem("");
     setFile("");
+    setFavourImage("");
+    props.onClose();
   };
 
   const validateFields = () => {
