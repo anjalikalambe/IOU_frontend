@@ -154,8 +154,9 @@ export default function GiveSomeone(props) {
       .get("/users", {
         headers: { Authorization: auth.token },
       })
-      .then((res) => {setUsers(res.data.filter((username) => username !== auth.username));
-    });
+      .then((res) => {
+        setUsers(res.data.filter((username) => username !== auth.username));
+      });
   }, []);
 
   return (
