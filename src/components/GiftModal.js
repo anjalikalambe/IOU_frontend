@@ -154,7 +154,8 @@ export default function GiveSomeone(props) {
       .get("/users", {
         headers: { Authorization: auth.token },
       })
-      .then((res) => setUsers(res.data));
+      .then((res) => {setUsers(res.data.filter((username) => username !== auth.username));
+    });
   }, []);
 
   return (
@@ -164,7 +165,7 @@ export default function GiveSomeone(props) {
         open={open}
         onClose={closeSnackbar}
         key={"topright"}
-        autoHideDuration={4000}
+        autoHideDuration={8000}
       >
         <Alert onClose={closeSnackbar} severity={type}>
           {message}
