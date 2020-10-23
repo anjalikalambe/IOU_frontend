@@ -78,6 +78,27 @@ const Login = (props) => {
 
   const validateSignUp = () => {
     let valid = true;
+    const illegalChars = /\W/;
+    const illegalPassword = /[^\x21-\x7E]/;
+    if (state.username.length > 15 ) {
+      setUsernameError({
+        error: true,
+        message: "Must be less than 15 characters",
+      });
+      valid = false;
+    } else if (illegalChars.test(state.username)) {
+      setUsernameError({
+        error: true,
+        message: "Letters and numbers only",
+      });
+      valid = false;
+    } 
+    else {
+      setUsernameError({
+        error: false,
+        message: "",
+      });
+    }
     if (state.password !== state.confirmPassword) {
       setConfirmPasswordError({
         error: true,
@@ -90,18 +111,26 @@ const Login = (props) => {
         message: "",
       });
     }
-    if (state.password.length < 6) {
+    if (state.password.length < 6 || state.password.length  > 18) {
       setPasswordError({
         error: true,
-        message: "Password must be atleast 6 characters",
+        message: "Length must be 6 to 18 characters",
       });
       valid = false;
-    } else {
+    } else if (illegalPassword.test(state.password)) {
+      setPasswordError({
+        error: true,
+        message: "Password has illegal characters",
+      });
+      valid = false;
+    }
+    else {
       setPasswordError({
         error: false,
         message: "",
       });
     }
+    
     return valid;
   };
   const handleSignIn = async (e) => {
@@ -202,7 +231,8 @@ const Login = (props) => {
                   setState({ ...state, confirmPassword: e.target.value })
                 }
                 InputProps={{ value: state.confirmPassword }}
-              />
+              />    
+              
               <span
                 style={{
                   textAlign: "left",
