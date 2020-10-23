@@ -58,7 +58,7 @@ export default function GiveSomeone() {
               <TableRow>
                 <TableCell>Rank</TableCell>
                 <TableCell>User</TableCell>
-                <TableCell>Rewards Earned</TableCell>
+                <TableCell>Favours Completed</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
