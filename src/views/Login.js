@@ -83,13 +83,13 @@ const Login = (props) => {
     if (state.username.length > 15 ) {
       setUsernameError({
         error: true,
-        message: "Must be less than 15 characters",
+        message: "Username cant be more than 15 characters",
       });
       valid = false;
     } else if (illegalChars.test(state.username)) {
       setUsernameError({
         error: true,
-        message: "Letters and numbers only",
+        message: "Letters, digits and _ only",
       });
       valid = false;
     } 
