@@ -6,6 +6,9 @@ import { BrowserRouter } from "react-router-dom";
 import { StoreProvider } from "./stores/helpers/StoreContext";
 import { createStore } from "./stores/helpers/CreateStore";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
+import axios from "axios";
+
+axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL;
 
 const rootStore = createStore();
 
