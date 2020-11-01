@@ -2,7 +2,7 @@
 
 ## Description
 
-This contains the source code for the favours user interface.
+This contains the source code for the favours user interface built using React.
 
 ## Setup
 
