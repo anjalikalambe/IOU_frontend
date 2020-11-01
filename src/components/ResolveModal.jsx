@@ -60,12 +60,15 @@ export default function ResolvePublicReq(props) {
     setFavourImage(e.target.files[0]);
   };
 
+  // resolves a public request by: 
+  // 1. calling the API resolve to rewards endpoint which creates favours owed to person that completed request
+  // 2. calls delete endpoint to remove the public request
   const handleSave = async () => {
     setLoading(true);
     let favour = props.selectedRow;
     const id = favour._id;
     const formData = new FormData();
-    formData.append("favourImage", favourImage);
+    formData.append("favourImage", favourImage); // sends image with which request is closed and subsequent favours opened
     formData.append("id", id);
     formData.append("opened_by", favour.opened_by);
     formData.append("rewards", JSON.stringify(favour.rewards));
@@ -73,6 +76,8 @@ export default function ResolvePublicReq(props) {
     let data = {
       id,
     };
+
+    //token received from localStorage and sent in req headers
     let token = JSON.parse(localStorage.getItem("data")).token;
 
     try {

@@ -40,6 +40,7 @@ export default function PublicRequest(props) {
     props.onClose();
   };
 
+  //calls api endpoint to create a new public request, route is protected thus token needs to be sent
   const handleSave = async () => {
     setLoading(true);
     let rewards = {
@@ -49,6 +50,7 @@ export default function PublicRequest(props) {
       description: name,
       rewards
     }
+    //token received from localStorage and sent in req header
     let token = JSON.parse(localStorage.getItem('data')).token;
 
     try {

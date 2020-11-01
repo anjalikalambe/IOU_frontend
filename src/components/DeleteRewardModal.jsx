@@ -45,6 +45,7 @@ export default function DeleteReward(props) {
     props.onClose();
   };
 
+  // deletes reward by removing it from the rewards array of that publi crequest, endpoint is protected and thus token needs to be sent
   const handleSave = async () => {
     setLoading(true);
     const favour = props.selectedRow;
@@ -53,6 +54,7 @@ export default function DeleteReward(props) {
       item: item,
     };
 
+    //token received from localStorage and sent in req headers
     let token = JSON.parse(localStorage.getItem("data")).token;
     
     try {

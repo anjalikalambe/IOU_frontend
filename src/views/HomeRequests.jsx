@@ -22,13 +22,14 @@ export default function HomeRequests() {
     setPage(0);
   };
 
+  //Function called on every render of this component to update public requests on page, hence refresh not required
   const fetchPublicRequests = async () => {
     setLoading(true);
     try {
       let res = await axios.get("/public/requests/");
       setLoading(false);
       const requests = res.data;
-      setRows(requests);
+      setRows(requests); //populates data with requests received from server
     } catch (e) {
       setLoading(false);
       console.log("Couldn't display the public requests." + e);
@@ -36,7 +37,7 @@ export default function HomeRequests() {
   };
 
   useEffect(() => {
-    fetchPublicRequests();
+    fetchPublicRequests(); //called on every render of the component
   }, []);
 
   const filterRows = () => {

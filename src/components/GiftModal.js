@@ -85,7 +85,7 @@ export default function GiveSomeone(props) {
     setFavourImage(e.target.files[0]);
   };
 
-  //Detects whether a party is formed or not
+  //Detects whether a party is formed and which members party will involve
   const detectParty = (id) => {
     let token = JSON.parse(localStorage.getItem("data")).token;
 
@@ -96,10 +96,10 @@ export default function GiveSomeone(props) {
           params: { id: id },
         })
 
-        let people = res.data.people;
-        let distinctPeople = [...new Set(people)];
+        let people = res.data.people; //receives an array of people
+        let distinctPeople = [...new Set(people)]; //only keeps unique usernames, removes duplicates
         openSnackbar(
-          res.data.message + distinctPeople + ". Meetup now!",
+          res.data.message + distinctPeople + ". Meetup now!", //combines all to send alert
           "success"
         );
       } catch (e) {
@@ -108,12 +108,14 @@ export default function GiveSomeone(props) {
     }, 1000);
   };
 
+  //calls the API endpoint to create a new favour 
   const handleSave = async () => {
     setLoading(true);
     let id;
     const formData = new FormData();
-    formData.append("favourImage", favourImage);
+    formData.append("favourImage", favourImage); //to send an image file, need to use form data
     formData.append("item", item);
+    // text changes according to props value sent
     formData.append(
       "owed_by",
       props.status === "Favour" ? auth.username : owed_by

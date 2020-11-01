@@ -37,6 +37,7 @@ export default function AddReward(props) {
     props.onClose();
   };
 
+  // adds a reward to the existing public request by calling the addReward endpoint on API, endpoint is protected and thus token needs to be sent
   const handleSave = async () => {
     setLoading(true);
     const favour = props.selectedRow;
@@ -46,6 +47,7 @@ export default function AddReward(props) {
       item: item
     }
 
+    //token received from localStorage and sent in req header
     let token = JSON.parse(localStorage.getItem('data')).token;
 
     try {
