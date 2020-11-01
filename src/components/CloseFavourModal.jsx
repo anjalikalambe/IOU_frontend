@@ -59,27 +59,26 @@ export default function GiveSomeone(props) {
     setFavourImage(e.target.files[0]);
   };
 
-  const handleResolve = () => {
+  // resolves the favour by providing an image, endpoint is protected and thus token needs to be sent
+  const handleResolve = async () => {
     let favour = props.selectedRow;
     const formData = new FormData();
     formData.append("favourImage", favourImage);
 
-    let auth = localStorage.getItem("data");
-    auth = JSON.parse(auth);
-    let token = auth.token;
-
-    axios
-      .post("/favours/resolve", formData, {
+    //token received from localStorage and sent in req header
+    let token = JSON.parse(localStorage.getItem('data')).token;
+    
+    try {
+      let res = await axios.post("/favours/resolve", formData, {
         headers: { Authorization: token },
         params: { id: favour._id },
       })
-      .then((res) => {
-        props.resolveFavour();
-        openSnackbar(res.data.message, "info");
-      })
-      .catch((e) => {
-        openSnackbar(e.response.data.message, "error");
-      });
+      props.resolveFavour();
+      openSnackbar(res.data.message, "info"); //alerts success in resolving favour
+
+    } catch (e) {
+      openSnackbar(e.response.data.message, "error");
+    }
 
     handleClose();
   };

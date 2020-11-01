@@ -45,26 +45,29 @@ export default function DeleteReward(props) {
     props.onClose();
   };
 
+  // deletes reward by removing it from the rewards array of that publi crequest, endpoint is protected and thus token needs to be sent
   const handleSave = async () => {
     setLoading(true);
     const favour = props.selectedRow;
     let id = favour._id;
-    console.log(id);
     let body = {
       item: item,
     };
 
+    //token received from localStorage and sent in req headers
     let token = JSON.parse(localStorage.getItem("data")).token;
-
-    await axios
-      .post("/public/requests/deleteReward/", body, {
+    
+    try {
+      await axios.post("/public/requests/deleteReward/", body, {
         headers: { Authorization: token },
         params: { id: id },
       })
-      .then(() => {
-        props.rewardDeleted();
-      })
-      .catch((e) => console.log("Could not delete reward"));
+      props.rewardDeleted();
+
+    } catch (e) {
+      console.log("Could not delete reward");
+    }
+    
     setLoading(false);
     handleClose();
   };

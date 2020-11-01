@@ -22,24 +22,22 @@ export default function HomeRequests() {
     setPage(0);
   };
 
-  const fetchPublicRequests = () => {
+  //Function called on every render of this component to update public requests on page, hence refresh not required
+  const fetchPublicRequests = async () => {
     setLoading(true);
-    axios
-      .get("/public/requests/")
-      .then((response) => {
-        setLoading(false);
-        const requests = response.data;
-        setRows(requests);
-        console.log("setRows(requests)");
-      })
-      .catch((e) => {
-        setLoading(false);
-        console.log("Couldn't display the public requests." + e);
-      });
+    try {
+      let res = await axios.get("/public/requests/");
+      setLoading(false);
+      const requests = res.data;
+      setRows(requests); //populates data with requests received from server
+    } catch (e) {
+      setLoading(false);
+      console.log("Couldn't display the public requests." + e);
+    }
   };
 
   useEffect(() => {
-    fetchPublicRequests();
+    fetchPublicRequests(); //called on every render of the component
   }, []);
 
   const filterRows = () => {

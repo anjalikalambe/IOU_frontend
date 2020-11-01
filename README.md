@@ -2,7 +2,7 @@
 
 ## Description
 
-This contains the source code for the favours user interface.
+This contains the source code for the favours user interface built using React.
 
 ## Setup
 
@@ -16,3 +16,5 @@ To install dependencies, run `npm install`
 ## Running Locally
 
 Once you have installed the dependencies, you can run the application locally, via: `npm run start`
+
+The Backend for the IOU application can be found at - https://github.com/anjalikalambe/IOU_backend

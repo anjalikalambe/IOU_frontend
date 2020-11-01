@@ -26,23 +26,23 @@ export default function HomeLeaderboard() {
     setPage(0);
   };
 
+  //Function called on every render of this component to update users on page, hence refresh not required
   const fetchLeaderboardUsers = async () => {
-    await axios
-      .get("/users/leaderboard/")
-      .then((response) => {
-        setRows(response.data);
-      })
-      .catch((e) => {
-        console.log("Error: " + e);
-      });
+    try {
+      let res = await axios.get("/users/leaderboard/");
+      setRows(res.data); //populates data with users received from server
+    } catch (e) {
+      console.log("Error: " + e);
+    }
   };
 
+  //on every render of the leaderboard page, users are updated
   useEffect(() => {
     setLoading(true);
     fetchLeaderboardUsers().then((_) => {
       setLoading(false);
     });
-    //Update the leaderboard every 5 seconds
+    //Update the leaderboard every 5 seconds to give 'live' affect
     const interval = setInterval(() => fetchLeaderboardUsers(), 5000);
     return () => clearInterval(interval);
   }, []);

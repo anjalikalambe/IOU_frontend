@@ -85,34 +85,37 @@ export default function GiveSomeone(props) {
     setFavourImage(e.target.files[0]);
   };
 
-  //Detects whether a party is formed or not
+  //Detects whether a party is formed and which members party will involve
   const detectParty = (id) => {
     let token = JSON.parse(localStorage.getItem("data")).token;
 
-    setTimeout(function () {
-      axios
-        .get("/favours/detectParty", {
+    setTimeout(async function () {
+      try {
+        let res = await axios.get("/favours/detectParty", {
           headers: { Authorization: token },
           params: { id: id },
         })
-        .then((res) => {
-          let people = res.data.people;
-          let distinctPeople = [...new Set(people)];
-          openSnackbar(
-            res.data.message + distinctPeople + ". Meetup now!",
-            "success"
-          );
-        })
-        .catch((e) => console.log(e));
+
+        let people = res.data.people; //receives an array of people
+        let distinctPeople = [...new Set(people)]; //only keeps unique usernames, removes duplicates
+        openSnackbar(
+          res.data.message + distinctPeople + ". Meetup now!", //combines all to send alert
+          "success"
+        );
+      } catch (e) {
+        console.log('error');
+      }
     }, 1000);
   };
 
+  //calls the API endpoint to create a new favour 
   const handleSave = async () => {
     setLoading(true);
     let id;
     const formData = new FormData();
-    formData.append("favourImage", favourImage);
+    formData.append("favourImage", favourImage); //to send an image file, need to use form data
     formData.append("item", item);
+    // text changes according to props value sent
     formData.append(
       "owed_by",
       props.status === "Favour" ? auth.username : owed_by
@@ -121,23 +124,22 @@ export default function GiveSomeone(props) {
       "owed_to",
       props.status === "Reward" ? auth.username : owed_to
     );
-    console.log(loading);
-    await axios
-      .post("/favours/add", formData, {
+    
+    try {
+      let res = await axios.post("/favours/add", formData, {
         headers: { Authorization: auth.token },
       })
-      .then((res) => {
-        setLoading(false);
-        console.log(loading);
-        id = res.data.id;
-        openSnackbar(res.data.message, "info");
-        handleClose();
-      })
-      .catch((e) => {
-        setLoading(false);
-        openSnackbar(e.response.data.message, "error");
-        handleClose();
-      });
+      setLoading(false);
+      id = res.data.id;
+      openSnackbar(res.data.message, "info");
+      handleClose();
+      
+    } catch (e) {
+      setLoading(false);
+      openSnackbar(e.response.data.message, "error");
+      handleClose();
+    }
+
     detectParty(id);
     owed.fetchFavours();
     earned.fetchFavours();
@@ -151,14 +153,20 @@ export default function GiveSomeone(props) {
   };
 
   useEffect(() => {
-    //Get the list of usernames so the user can easily select which user to reward
-    axios
-      .get("/users", {
-        headers: { Authorization: auth.token },
-      })
-      .then((res) => {
+    async function getUsers() {
+      try {
+        //Get the list of usernames so the user can easily select which user to reward
+        let res = await axios
+        .get("/users", {
+          headers: { Authorization: auth.token },
+        })
         setUsers(res.data.filter((username) => username !== auth.username));
-      });
+  
+      } catch (e) {
+        console.log('error');
+      }
+    }
+    getUsers();
   }, []);
 
   return (
