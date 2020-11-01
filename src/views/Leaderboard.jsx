@@ -26,15 +26,14 @@ export default function GiveSomeone() {
   };
 
   const fetchLeaderboardUsers = async () => {
-    await axios
-      .get("/users/leaderboard/")
-      .then((response) => {
-        let users = response.data;
-        setRows(users);
-      })
-      .catch((e) => {
-        console.log("Error: " + e);
-      });
+    try {
+      let res = await axios.get("/users/leaderboard/");
+      let users = res.data;
+      setRows(users);
+
+    } catch (e) {
+      console.log("Error: " + e);
+    }
   };
 
   useEffect(() => {

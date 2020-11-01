@@ -22,20 +22,17 @@ export default function HomeRequests() {
     setPage(0);
   };
 
-  const fetchPublicRequests = () => {
+  const fetchPublicRequests = async () => {
     setLoading(true);
-    axios
-      .get("/public/requests/")
-      .then((response) => {
-        setLoading(false);
-        const requests = response.data;
-        setRows(requests);
-        console.log("setRows(requests)");
-      })
-      .catch((e) => {
-        setLoading(false);
-        console.log("Couldn't display the public requests." + e);
-      });
+    try {
+      let res = await axios.get("/public/requests/");
+      setLoading(false);
+      const requests = res.data;
+      setRows(requests);
+    } catch (e) {
+      setLoading(false);
+      console.log("Couldn't display the public requests." + e);
+    }
   };
 
   useEffect(() => {

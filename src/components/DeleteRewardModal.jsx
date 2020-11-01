@@ -49,22 +49,23 @@ export default function DeleteReward(props) {
     setLoading(true);
     const favour = props.selectedRow;
     let id = favour._id;
-    console.log(id);
     let body = {
       item: item,
     };
 
     let token = JSON.parse(localStorage.getItem("data")).token;
-
-    await axios
-      .post("/public/requests/deleteReward/", body, {
+    
+    try {
+      await axios.post("/public/requests/deleteReward/", body, {
         headers: { Authorization: token },
         params: { id: id },
       })
-      .then(() => {
-        props.rewardDeleted();
-      })
-      .catch((e) => console.log("Could not delete reward"));
+      props.rewardDeleted();
+
+    } catch (e) {
+      console.log("Could not delete reward");
+    }
+    
     setLoading(false);
     handleClose();
   };

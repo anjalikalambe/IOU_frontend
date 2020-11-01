@@ -35,18 +35,17 @@ export default function PublicRequests() {
   };
 
   //Grab all public requests from the backend API
-  const fetchPublicRequests = () => {
+  const fetchPublicRequests = async () => {
     setLoading(true);
-    axios
-      .get("/public/requests/")
-      .then((response) => {
-        setLoading(false);
-        const requests = response.data;
-        setRows(requests);
-      })
-      .catch((e) => {
-        setLoading(false);
-      });
+    try {
+      let res = await axios.get("/public/requests/");
+      setLoading(false);
+      const requests = res.data;
+      setRows(requests);
+    } catch (e) {
+      setLoading(false);
+      console.log("Couldn't display the public requests." + e);
+    }
   };
 
   //Calc rewards owed by the user so they can choose from their rewards to delete

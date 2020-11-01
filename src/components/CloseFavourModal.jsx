@@ -59,7 +59,7 @@ export default function GiveSomeone(props) {
     setFavourImage(e.target.files[0]);
   };
 
-  const handleResolve = () => {
+  const handleResolve = async () => {
     let favour = props.selectedRow;
     const formData = new FormData();
     formData.append("favourImage", favourImage);
@@ -67,19 +67,18 @@ export default function GiveSomeone(props) {
     let auth = localStorage.getItem("data");
     auth = JSON.parse(auth);
     let token = auth.token;
-
-    axios
-      .post("/favours/resolve", formData, {
+    
+    try {
+      let res = await axios.post("/favours/resolve", formData, {
         headers: { Authorization: token },
         params: { id: favour._id },
       })
-      .then((res) => {
-        props.resolveFavour();
-        openSnackbar(res.data.message, "info");
-      })
-      .catch((e) => {
-        openSnackbar(e.response.data.message, "error");
-      });
+      props.resolveFavour();
+      openSnackbar(res.data.message, "info");
+
+    } catch (e) {
+      openSnackbar(e.response.data.message, "error");
+    }
 
     handleClose();
   };

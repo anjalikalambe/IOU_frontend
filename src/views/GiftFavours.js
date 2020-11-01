@@ -93,7 +93,7 @@ function GiveSomeone() {
                                 src={row.openImgURL}
                                 alt=""
                                 onClick={() =>
-                                  window.open(row.closeImgURL, "_blank")
+                                  window.open(row.openImgURL, "_blank")
                                 }
                               />
                             ) : (

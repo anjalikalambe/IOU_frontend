@@ -51,11 +51,13 @@ export default function PublicRequest(props) {
     }
     let token = JSON.parse(localStorage.getItem('data')).token;
 
-    await axios.post("/public/requests/add", body, { headers: {'Authorization': token}  })
-      .then(() => {
-        props.addRequest();
-      })
-      .catch(e => console.log("Could not create request"));
+    try {
+      await axios.post("/public/requests/add", body, { headers: { 'Authorization': token } })
+      props.addRequest();
+    } catch (e) {
+      console.log("Could not create request");
+    }
+    
     setLoading(false);
     handleClose();
   };

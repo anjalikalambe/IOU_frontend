@@ -27,14 +27,12 @@ export default function HomeLeaderboard() {
   };
 
   const fetchLeaderboardUsers = async () => {
-    await axios
-      .get("/users/leaderboard/")
-      .then((response) => {
-        setRows(response.data);
-      })
-      .catch((e) => {
-        console.log("Error: " + e);
-      });
+    try {
+      let res = await axios.get("/users/leaderboard/");
+      setRows(res.data);
+    } catch (e) {
+      console.log("Error: " + e);
+    }
   };
 
   useEffect(() => {

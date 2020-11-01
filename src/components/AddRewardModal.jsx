@@ -48,11 +48,14 @@ export default function AddReward(props) {
 
     let token = JSON.parse(localStorage.getItem('data')).token;
 
-    await axios.post("/public/requests/addReward/", body, { headers: { 'Authorization': token }, params:{"id" : id}  })
-      .then(() => {
-        props.rewardAdded();
-      })
-      .catch(e => console.log("Could not add reward"));
+    try {
+      await axios.post("/public/requests/addReward/", body, { headers: { 'Authorization': token }, params: { "id": id } })
+      props.rewardAdded();
+
+    } catch (e) {
+      console.log("Could not add reward");
+    }
+    
     setLoading(false);
     handleClose();
   };
