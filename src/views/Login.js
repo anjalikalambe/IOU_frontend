@@ -8,11 +8,12 @@ import axios from "axios";
 import MuiAlert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import HomeNav from '../components/HomeNav'
+
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const Login = (props) => {
+const Login = () => {
   const {
     auth,
   } = useStore();
@@ -40,11 +41,15 @@ const Login = (props) => {
     message: "",
     type: "info",
   });
+
   const { open, message, type } = snackbarState;
+
   const history = useHistory();
+
   const openSnackbar = (message, type = "info") => {
     setSnackbarState({ open: true, message, type });
   };
+
   const closeSnackbar = () => {
     setSnackbarState({ open: false, message, type });
   };
@@ -58,16 +63,21 @@ const Login = (props) => {
       email: "",
     });
   };
+
   const clearErrors = () => {
     setUsernameError({ error: false, message: "" });
     setPasswordError({ error: false, message: "" });
     setConfirmPasswordError({ error: false, message: "" });
   };
+
+  //Animation that switches the user interface to the login component
   const showLogin = () => {
     clearState();
     clearErrors();
     document.getElementById("container").classList.remove("right-panel-active");
   };
+
+  //Animation that switches the user interface to the registration component
   const showRegister = () => {
     clearState();
     clearErrors();
@@ -76,6 +86,7 @@ const Login = (props) => {
     }
   };
 
+  //Validate the input fields on register
   const validateSignUp = () => {
     let valid = true;
     const illegalChars = /\W/;
@@ -133,13 +144,18 @@ const Login = (props) => {
     
     return valid;
   };
+
+  //Function that signs in the user in the backend and in MobX's global state
   const handleSignIn = async (e) => {
     e.preventDefault();
     try {
+      //Log user in and receive a token
       let response = await axios.post("/auth/login", {
         username: state.username,
         password: state.password,
       });
+      //Register the login in MobX's persisted state
+      //Lets user refresh page and maintain auth state
       auth.login({
         token: response.data.token,
         username: state.username,
@@ -152,6 +168,8 @@ const Login = (props) => {
       openSnackbar(e.response.data.message, "error");
     }
   };
+
+  //Register user 
   const handleSignUp = async (e) => {
     e.preventDefault();
     if (validateSignUp()) {
@@ -168,6 +186,8 @@ const Login = (props) => {
       }
     }
   };
+
+  //If route is '/register' on mount, then show register component
   useState(() => {
     if (window.location.pathname === '/register') {
       setTimeout(() => {
@@ -175,6 +195,7 @@ const Login = (props) => {
       });
     } 
   }, [])
+  
   return (
     <div id="login">
       <div className="homenav-wrapper">

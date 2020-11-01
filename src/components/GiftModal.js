@@ -52,7 +52,7 @@ export default function GiveSomeone(props) {
     type: "info",
   });
 
-  const { auth, owed, earned } = useStore();
+  const { auth, owed, earned } = useStore(); //MobX global states
 
   const { open, message, type } = snackbarState;
 
@@ -85,6 +85,7 @@ export default function GiveSomeone(props) {
     setFavourImage(e.target.files[0]);
   };
 
+  //Detects whether a party is formed or not
   const detectParty = (id) => {
     let token = JSON.parse(localStorage.getItem("data")).token;
 
@@ -150,6 +151,7 @@ export default function GiveSomeone(props) {
   };
 
   useEffect(() => {
+    //Get the list of usernames so the user can easily select which user to reward
     axios
       .get("/users", {
         headers: { Authorization: auth.token },

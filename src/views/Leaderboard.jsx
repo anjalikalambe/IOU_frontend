@@ -40,6 +40,7 @@ export default function GiveSomeone() {
   useEffect(() => {
     setLoading(true);
     fetchLeaderboardUsers().then((_) => setLoading(false));
+    //Update the leaderboard every 5 seconds
     const interval = setInterval(() => fetchLeaderboardUsers(), 5000);
     return () => clearInterval(interval);
   }, []);

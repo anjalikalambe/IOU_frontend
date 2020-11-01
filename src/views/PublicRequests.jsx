@@ -25,6 +25,7 @@ export default function PublicRequests() {
 
   const { auth } = useStore();
 
+  //Pagination configuration
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -33,6 +34,7 @@ export default function PublicRequests() {
     setPage(0);
   };
 
+  //Grab all public requests from the backend API
   const fetchPublicRequests = () => {
     setLoading(true);
     axios
@@ -44,10 +46,10 @@ export default function PublicRequests() {
       })
       .catch((e) => {
         setLoading(false);
-        console.log("Couldn't display the public requests." + e);
       });
   };
 
+  //Calc rewards owed by the user so they can choose from their rewards to delete
   const myRewards = (row) => {
     if (!row.rewards) return;
     return row.rewards.filter((reward) => reward.owed_by === auth.username);
@@ -57,23 +59,28 @@ export default function PublicRequests() {
     setShowModal(true);
     setSelectedRow({});
   };
+
   const addReward = (row) => {
     setShowAddRewardModal(true);
     setSelectedRow(row);
   };
+
   const deleteReward = (row) => {
     setShowDeleteRewardModal(true);
     setSelectedRow(row);
   };
+
   const resolve = (row) => {
     setShowResolve(true);
     setSelectedRow(row);
   };
 
+  //Fetch all requests when page loads
   useEffect(() => {
     fetchPublicRequests();
   }, []);
 
+  //Filter rows by either reward or task description
   const filterRows = () => {
     return rows.filter((row) => {
       return (
@@ -85,13 +92,19 @@ export default function PublicRequests() {
   };
 
   const displayRewards = (array) => {
+    //Empty state
     if (!array.length) return <span>None</span>;
+    
+    //Create a hash map data structure of the rewards
     let arr = array.map((item) => item.item);
     let map = {};
     for (let i = 0; i < arr.length; ++i) {
       map[arr[i]] ? map[arr[i]]++ : (map[arr[i]] = 1);
     }
+
     return Object.keys(map).map((reward, index) => {
+      //Condence multiple awards
+      //('Coffee, Coffee' turns into 'Coffee x2')
       if (map[reward] > 1) {
         return (
           <span key={reward + (index * 1000 + map[reward])}>
@@ -210,8 +223,6 @@ export default function PublicRequests() {
           setShowModal(false);
         }}
         isOpen={showModal}
-        resolveFavour={(file) => console.log("resolveFavour() ", file)}
-        createFavour={(form) => console.log("createFavour() ", form)}
         addRequest={fetchPublicRequests}
       />
       <AddReward
@@ -236,8 +247,6 @@ export default function PublicRequests() {
           setShowResolve(false);
         }}
         isOpen={showResolve}
-        resolveFavour={(file) => console.log("resolveFavour() ", file)}
-        createFavour={(form) => console.log("createFavour() ", form)}
         requestResolved={fetchPublicRequests}
       />
     </div>

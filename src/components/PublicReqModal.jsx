@@ -53,7 +53,6 @@ export default function PublicRequest(props) {
 
     await axios.post("/public/requests/add", body, { headers: {'Authorization': token}  })
       .then(() => {
-        // console.log("Sucessfully created request");
         props.addRequest();
       })
       .catch(e => console.log("Could not create request"));

@@ -3,8 +3,7 @@ import { useStore } from '../stores/helpers/UseStore';
 import { Route, Redirect } from 'react-router-dom'
 
 const UnprotectedRoute = ({ component: Component, ...rest }) => {
-  const { auth } = useStore();
-
+  const { auth } = useStore(); //MobX persisted store
   return (
     <Route
       {...rest}

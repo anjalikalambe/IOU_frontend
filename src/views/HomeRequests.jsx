@@ -4,7 +4,7 @@ import axios from "axios";
 import { TablePagination, TextField } from "@material-ui/core";
 import HomeNav from "../components/HomeNav";
 import "./HomeRequests.scss";
-import Loader from '../components/UI/Loader'
+import Loader from "../components/UI/Loader";
 
 export default function HomeRequests() {
   const [rows, setRows] = useState([]);
@@ -13,6 +13,7 @@ export default function HomeRequests() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(9);
 
+  //Pagination config
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -42,6 +43,7 @@ export default function HomeRequests() {
   }, []);
 
   const filterRows = () => {
+    //Filter the task by description or reward name
     return rows.filter((row) => {
       return (
         [...new Set(row.rewards.map((reward) => reward.item.toLowerCase()))]
@@ -52,13 +54,19 @@ export default function HomeRequests() {
   };
 
   const displayRewards = (array) => {
+    //Empty state
     if (!array.length) return <span>None</span>;
+
+    //Create a hash map data structure for the rewards
     let arr = array.map((item) => item.item);
     let map = {};
     for (let i = 0; i < arr.length; ++i) {
       map[arr[i]] ? map[arr[i]]++ : (map[arr[i]] = 1);
     }
+
     return Object.keys(map).map((reward, index) => {
+      //Condence multiple awards
+      //('Coffee, Coffee' turns into 'Coffee x2')
       if (map[reward] > 1) {
         return (
           <span key={reward + (index * 1000 + map[reward])}>

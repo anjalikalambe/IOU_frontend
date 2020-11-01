@@ -17,8 +17,9 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import UnprotectedRoute from "./utils/UnprotectedRoute";
 
 function App() {
-  const { auth } = useStore();
+  const { auth } = useStore(); //MobX persisted store
 
+  //Check if the authentication state is valid on page mount
   useEffect(() => {
     auth.validateToken();
   }, []);

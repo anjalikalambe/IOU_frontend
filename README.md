@@ -1,15 +1,18 @@
-## Available Scripts
+# IOU Frontend
 
-In the project directory, you can run:
+## Description
 
-### `npm install`
+This contains the source code for the favours user interface.
 
-Installs app dependencies 
+## Setup
 
-### `npm start`
+This application requires NodeJS and NPM to be installed.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Verify you have node by running: `node --version`
+- Verify you have npm by running: `npm --version`
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+To install dependencies, run `npm install`
+
+## Running Locally
+
+Once you have installed the dependencies, you can run the application locally, via: `npm run start`

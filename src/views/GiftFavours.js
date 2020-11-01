@@ -24,6 +24,7 @@ function GiveSomeone() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { owed } = useStore();
 
+  //Pagination configuration
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
